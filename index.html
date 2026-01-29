@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Doc v4.9 | Full CRM & Timeline Suite</title>
+    <title>Chrono-Doc v5.0 | Sales Analytics & CRM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Space Grotesk', sans-serif; background: #0f172a; color: #f8fafc; }
         .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; }
-        .sidebar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-right: 1px solid #1e293b; }
+        .sidebar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(25px); border-right: 1px solid #1e293b; height: 100vh; overflow-y: auto; }
         .glass-paper { background: white; color: #1e293b; border-radius: 40px; width: 210mm; min-height: 297mm; margin: 2rem auto; padding: 50px; box-shadow: 0 0 80px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .neon-btn { background: linear-gradient(135deg, #6366f1, #a855f7); transition: 0.3s; }
-        .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(99, 102, 241, 0.6); }
-        .gallery-slot { border: 2px dashed #e2e8f0; border-radius: 20px; transition: 0.3s; }
-        .stamp-box { border: 2px dashed #6366f1; border-radius: 15px; width: 130px; height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #f5f3ff; transition: 0.3s; }
+        .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
+        .stat-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; }
+        .stamp-box { border: 2px dashed #6366f1; border-radius: 15px; width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #f5f3ff; }
         .terms-text { font-size: 8px; line-height: 1.4; color: #94a3b8; column-count: 2; column-gap: 20px; border-top: 1px solid #f1f5f9; padding-top: 15px; margin-top: 25px; }
         @media print { .no-print { display: none !important; } body { background: white !important; } .glass-paper { margin: 0; box-shadow: none; border-radius: 0; width: 100%; } }
     </style>
@@ -23,27 +23,45 @@
 <body class="flex flex-col md:flex-row min-h-screen">
     <div class="grid-bg"></div>
 
-    <aside class="no-print w-full md:w-80 sidebar p-8 flex flex-col gap-6 z-10">
-        <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center font-black text-white">DB</div>
-            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Chrono v4.9</h1>
+    <aside class="no-print w-full md:w-80 sidebar p-6 flex flex-col gap-5 z-10 custom-scroll">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/30">V5</div>
+            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">CHRONO PRO</h1>
         </div>
 
-        <button onclick="addRow()" class="neon-btn py-4 rounded-2xl font-black text-xs text-white uppercase tracking-widest">＋ New Line Item</button>
-
-        <div class="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 space-y-4">
-            <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest px-1">CRM Suite</label>
-            <select id="client-select-dropdown" onchange="applyClient(this.value)" class="w-full bg-slate-800 border-none rounded-xl p-3 text-xs font-bold text-indigo-300 outline-none focus:ring-2 ring-indigo-500"></select>
-            <button onclick="toggleBlast()" class="w-full py-3 bg-green-500/10 text-green-400 border border-green-500/20 rounded-xl text-[10px] font-black uppercase">WhatsApp Blast Tool</button>
-            <div class="flex items-center justify-between px-1 pt-2 border-t border-slate-800">
-                <span class="text-[10px] font-black text-slate-400 uppercase">Legal Terms</span>
-                <input type="checkbox" id="terms-toggle" checked onchange="updateTermsVisibility()" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+        <div class="space-y-3">
+            <label class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] px-1">Performance Report</label>
+            <div class="stat-card">
+                <p class="text-[9px] font-bold text-slate-400 uppercase">Est. Revenue Pool</p>
+                <p id="stat-revenue" class="text-2xl font-black text-white tracking-tighter">RM 0.00</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="stat-card">
+                    <p class="text-[8px] font-bold text-slate-400 uppercase">Clients</p>
+                    <p id="stat-clients" class="text-lg font-black text-indigo-400">0</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-[8px] font-bold text-slate-400 uppercase">Stock Items</p>
+                    <p id="stat-items" class="text-lg font-black text-purple-400">0</p>
+                </div>
             </div>
         </div>
 
-        <div class="mt-auto space-y-3">
-            <button onclick="toggleDb()" class="w-full py-3 bg-slate-800 text-slate-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition">Database Manager</button>
-            <button onclick="generatePDF()" class="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-slate-100 transition">Download PDF</button>
+        <button onclick="addRow()" class="neon-btn py-4 rounded-2xl font-black text-xs text-white uppercase tracking-widest mt-2">＋ New Quotation Line</button>
+
+        <div class="bg-slate-900/60 p-4 rounded-3xl border border-slate-800 space-y-4">
+            <label class="text-[10px] font-black text-indigo-400 uppercase px-1">Client Sync</label>
+            <select id="client-select-dropdown" onchange="applyClient(this.value)" class="w-full bg-slate-800 border-none rounded-xl p-3 text-xs font-bold text-indigo-300 outline-none"></select>
+            <button onclick="toggleBlast()" class="w-full py-3 bg-green-500/10 text-green-400 border border-green-500/20 rounded-xl text-[10px] font-black uppercase hover:bg-green-500/20 transition">WhatsApp Blast</button>
+            <div class="flex items-center justify-between px-1">
+                <span class="text-[10px] font-black text-slate-400">Terms</span>
+                <input type="checkbox" id="terms-toggle" checked onchange="updateTermsVisibility()" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-600">
+            </div>
+        </div>
+
+        <div class="mt-auto space-y-2">
+            <button onclick="toggleDb()" class="w-full py-3 bg-slate-800 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:text-white transition">Database Manager</button>
+            <button onclick="generatePDF()" class="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-indigo-50 transition">Download PDF</button>
         </div>
     </aside>
 
@@ -57,7 +75,7 @@
                 </div>
                 <div class="text-right">
                     <h3 contenteditable="true" class="font-black text-xl text-slate-900">DB SMARTHOME & SECURITY</h3>
-                    <p contenteditable="true" class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Gemas, Negeri Sembilan | 003556730-T</p>
+                    <p contenteditable="true" class="text-[10px] text-slate-400 font-bold uppercase">Gemas, N.S | 003556730-T</p>
                 </div>
             </header>
 
@@ -65,17 +83,17 @@
                 <div class="col-span-1">
                     <h4 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">Recipient</h4>
                     <p id="c-name" contenteditable="true" class="text-xl font-black leading-none">Client Name</p>
-                    <p id="c-addr" contenteditable="true" class="text-[11px] text-slate-500 mt-2 leading-relaxed">Client Address...</p>
+                    <p id="c-addr" contenteditable="true" class="text-[11px] text-slate-500 mt-2">Address...</p>
                     <input type="hidden" id="c-phone">
                 </div>
                 <div class="col-span-1 border-l border-slate-50 pl-8">
                     <h4 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">Timeline</h4>
-                    <p class="text-[10px] font-bold text-slate-300 uppercase mb-1">Service Period: <span contenteditable="true" class="text-slate-900 ml-1">3 Working Days</span></p>
-                    <p class="text-[10px] font-bold text-slate-300 uppercase">Completion: <span contenteditable="true" class="text-slate-900 ml-1">05/02/2026</span></p>
+                    <p class="text-[10px] font-bold text-slate-300 uppercase">Period: <span contenteditable="true" class="text-slate-900 ml-1">3 Days</span></p>
+                    <p class="text-[10px] font-bold text-slate-300 uppercase mt-1">Completion: <span contenteditable="true" class="text-slate-900 ml-1">05/02/2026</span></p>
                 </div>
                 <div class="col-span-1 text-right text-xs font-bold">
-                    <p class="text-slate-300 uppercase mb-1 tracking-widest">Ref: <span id="doc-id" contenteditable="true" class="text-slate-900 ml-1">QT-2601</span></p>
-                    <p class="text-slate-300 uppercase tracking-widest">Date: <span contenteditable="true" class="text-slate-900 ml-1">29/01/2026</span></p>
+                    <p class="text-slate-300 uppercase">Ref: <span id="doc-id" contenteditable="true" class="text-slate-900 ml-1">QT-2601</span></p>
+                    <p class="text-slate-300 uppercase mt-1">Date: <span contenteditable="true" class="text-slate-900 ml-1">29/01/2026</span></p>
                 </div>
             </div>
 
@@ -83,7 +101,7 @@
                 <table class="w-full mb-10 text-slate-900">
                     <thead class="text-[10px] font-black text-slate-400 uppercase border-b">
                         <tr>
-                            <th class="py-4 text-left">Project Scope / Hardware</th>
+                            <th class="py-4 text-left">Description</th>
                             <th class="py-4 text-center w-20">Qty</th>
                             <th class="py-4 text-right w-32">Unit (RM)</th>
                             <th class="py-4 text-right w-32">Total</th>
@@ -96,28 +114,23 @@
 
             <div class="grid grid-cols-12 gap-8 items-end border-t border-slate-50 pt-10">
                 <div class="col-span-4">
-                    <h4 class="text-[10px] font-black text-indigo-500 uppercase mb-4 tracking-widest">Installation Photos</h4>
+                    <h4 class="text-[10px] font-black text-indigo-500 uppercase mb-4 tracking-widest">Site Photos</h4>
                     <div class="flex gap-2">
                         <div class="gallery-slot w-20 h-20 flex items-center justify-center cursor-pointer overflow-hidden bg-slate-50" onclick="triggerGallery(0)">
-                            <img id="g-0" class="w-full h-full object-cover hidden"><span class="text-[8px] text-slate-300 font-bold">+ PHOTO</span>
+                            <img id="g-0" class="w-full h-full object-cover hidden"><span class="text-[8px] text-slate-300">+ PHOTO</span>
                         </div>
                         <div class="gallery-slot w-20 h-20 flex items-center justify-center cursor-pointer overflow-hidden bg-slate-50" onclick="triggerGallery(1)">
-                            <img id="g-1" class="w-full h-full object-cover hidden"><span class="text-[8px] text-slate-300 font-bold">+ PHOTO</span>
+                            <img id="g-1" class="w-full h-full object-cover hidden"><span class="text-[8px] text-slate-300">+ PHOTO</span>
                         </div>
-                        <input type="file" id="gallery-in" class="hidden" onchange="loadGallery(event)">
                     </div>
                 </div>
 
                 <div class="col-span-3 flex flex-col items-center">
-                    <div class="stamp-box overflow-hidden relative" onclick="document.getElementById('stamp-in').click()">
+                    <div class="stamp-box overflow-hidden" onclick="document.getElementById('stamp-in').click()">
                         <img id="stamp-img" class="w-full h-full object-contain hidden">
-                        <div id="stamp-label" class="text-center">
-                            <span class="text-[9px] font-black text-indigo-400 uppercase tracking-tighter">OFFICIAL</span><br>
-                            <span class="text-[8px] font-bold text-indigo-300 uppercase">STAMP</span>
-                        </div>
+                        <div id="stamp-label" class="text-center"><span class="text-[9px] font-black text-indigo-400">OFFICIAL STAMP</span></div>
                     </div>
                     <input type="file" id="stamp-in" class="hidden" onchange="loadFile(event, 'stamp-img', true)">
-                    <p class="text-[8px] font-black text-slate-400 uppercase mt-3 tracking-widest italic opacity-50">Authorized Personnel</p>
                 </div>
 
                 <div class="col-span-5 text-slate-900">
@@ -125,8 +138,8 @@
                         <div class="flex justify-between"><span>Subtotal</span><span id="sub-total">0.00</span></div>
                         <div class="flex justify-between text-indigo-500"><span>SST (6%)</span><span id="tax-val">0.00</span></div>
                     </div>
-                    <div class="bg-slate-900 text-white p-7 rounded-[2rem] shadow-2xl">
-                        <span class="text-[9px] font-black uppercase opacity-40 tracking-widest">Total Investment</span>
+                    <div class="bg-slate-900 text-white p-7 rounded-[2.5rem]">
+                        <span class="text-[9px] font-black uppercase opacity-40 tracking-widest">Total Payable</span>
                         <div id="grand-total" class="text-3xl font-black tracking-tighter">RM 0.00</div>
                     </div>
                 </div>
@@ -138,44 +151,37 @@
 
     <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-xl flex items-center justify-center z-50 p-6 text-slate-900">
         <div class="bg-white rounded-[3rem] p-10 w-full max-w-5xl shadow-2xl">
-            <div class="flex justify-between items-center mb-8 border-b pb-6">
-                <div>
-                    <h3 class="text-3xl font-black tracking-tight">Database Manager</h3>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">Manage items, clients, and legal terms</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="exportData()" class="bg-slate-100 hover:bg-slate-200 px-6 py-2 rounded-xl text-[10px] font-black uppercase transition">Export JSON</button>
-                    <label class="bg-indigo-100 text-indigo-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase cursor-pointer hover:bg-indigo-200 transition">Import JSON <input type="file" id="import-file" class="hidden" onchange="importData(event)"></label>
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-3xl font-black tracking-tight uppercase">Database & Backups</h3>
+                <div class="flex gap-2">
+                    <button onclick="exportData()" class="bg-slate-100 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">Export Backup</button>
+                    <label class="bg-indigo-100 text-indigo-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase cursor-pointer">Import Backup <input type="file" id="import-file" class="hidden" onchange="importData(event)"></label>
                 </div>
             </div>
             <div class="grid grid-cols-3 gap-8">
                 <div>
-                    <label class="text-[10px] font-black text-indigo-600 uppercase mb-3 block tracking-widest">Inventory List</label>
-                    <textarea id="raw-inv" placeholder="Item | Description | Price" class="w-full h-72 bg-slate-50 rounded-3xl p-5 text-xs font-mono border-none outline-none focus:ring-2 ring-indigo-500"></textarea>
+                    <label class="text-[10px] font-black text-indigo-500 uppercase mb-3 block">Inventory List</label>
+                    <textarea id="raw-inv" placeholder="Item | Description | Price" class="w-full h-72 bg-slate-50 rounded-3xl p-5 text-xs font-mono"></textarea>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-indigo-600 uppercase mb-3 block tracking-widest">Client Database</label>
-                    <textarea id="raw-cli" placeholder="Name | Address | Phone" class="w-full h-72 bg-slate-50 rounded-3xl p-5 text-xs font-mono border-none outline-none focus:ring-2 ring-indigo-500"></textarea>
+                    <label class="text-[10px] font-black text-indigo-500 uppercase mb-3 block">Client Database</label>
+                    <textarea id="raw-cli" placeholder="Name | Address | Phone" class="w-full h-72 bg-slate-50 rounded-3xl p-5 text-xs font-mono"></textarea>
                 </div>
                 <div>
-                    <label class="text-[10px] font-black text-indigo-600 uppercase mb-3 block tracking-widest">Legal Clauses</label>
-                    <textarea id="raw-terms" placeholder="Terms & Conditions..." class="w-full h-72 bg-slate-50 rounded-3xl p-5 text-xs font-mono border-none outline-none focus:ring-2 ring-indigo-500"></textarea>
+                    <label class="text-[10px] font-black text-indigo-500 uppercase mb-3 block">Standard Terms</label>
+                    <textarea id="raw-terms" class="w-full h-72 bg-slate-50 rounded-3xl p-5 text-xs font-mono"></textarea>
                 </div>
             </div>
-            <div class="mt-10 flex justify-end gap-4">
-                <button onclick="toggleDb()" class="text-slate-400 font-bold px-6 uppercase text-xs">Cancel</button>
-                <button onclick="saveDb()" class="neon-btn px-12 py-4 text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-indigo-500/20">Save Everything</button>
-            </div>
+            <div class="mt-8 flex justify-end gap-3"><button onclick="toggleDb()" class="text-slate-400 font-bold px-6">Cancel</button><button onclick="saveDb()" class="neon-btn px-12 py-4 text-white font-black rounded-2xl uppercase text-xs">Save & Sync</button></div>
         </div>
     </div>
 
     <div id="blast-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-xl flex items-center justify-center z-50 p-6 text-slate-900">
         <div class="bg-white rounded-[3rem] p-10 w-full max-w-xl shadow-2xl">
-            <h3 class="text-2xl font-black mb-1 tracking-tight">WhatsApp Blast Engine</h3>
-            <p class="text-[10px] font-bold text-slate-400 uppercase mb-6 tracking-widest">Broadcast to all clients</p>
-            <textarea id="blast-msg" class="w-full h-40 bg-slate-50 rounded-3xl p-5 text-sm mb-6 outline-none focus:ring-2 ring-green-500 border-none" placeholder="Hi [Name], your system check is scheduled..."></textarea>
-            <div id="blast-list" class="max-h-60 overflow-y-auto space-y-3 pr-3"></div>
-            <div class="mt-8 flex justify-end"><button onclick="toggleBlast()" class="text-slate-400 font-black text-xs uppercase">Dismiss</button></div>
+            <h3 class="text-2xl font-black mb-4 tracking-tight">WHATSAPP BLAST</h3>
+            <textarea id="blast-msg" class="w-full h-40 bg-slate-50 rounded-3xl p-5 text-sm mb-6 outline-none" placeholder="Hi [Name], content here..."></textarea>
+            <div id="blast-list" class="max-h-60 overflow-y-auto space-y-3 pr-2"></div>
+            <button onclick="toggleBlast()" class="mt-8 text-slate-400 font-black text-xs uppercase">Dismiss</button>
         </div>
     </div>
 
@@ -186,30 +192,42 @@
         function toggleBlast() { document.getElementById('blast-modal').classList.toggle('hidden'); if(!document.getElementById('blast-modal').classList.contains('hidden')) renderBlast(); }
 
         function saveDb() {
-            localStorage.setItem('v49_inv', document.getElementById('raw-inv').value);
-            localStorage.setItem('v49_cli', document.getElementById('raw-cli').value);
-            localStorage.setItem('v49_terms', document.getElementById('raw-terms').value);
+            localStorage.setItem('v50_inv', document.getElementById('raw-inv').value);
+            localStorage.setItem('v50_cli', document.getElementById('raw-cli').value);
+            localStorage.setItem('v50_terms', document.getElementById('raw-terms').value);
             syncData(); toggleDb();
         }
 
         function syncData() {
-            const rInv = localStorage.getItem('v49_inv') || "Smart CCTV Pack | 4-Cam High Res | 2500";
-            const rCli = localStorage.getItem('v49_cli') || "Client Name | Street 1 | 60123456789";
-            const rTrm = localStorage.getItem('v49_terms') || "1. 50% Deposit required.\n2. 1-Year Warranty.\n3. Valid for 30 days.";
+            const rInv = localStorage.getItem('v50_inv') || "CCTV Standard | Installation | 2500";
+            const rCli = localStorage.getItem('v50_cli') || "Example Client | Street | 60123456789";
+            const rTrm = localStorage.getItem('v50_terms') || "1. 50% Deposit.\n2. 1-Year Warranty.";
             document.getElementById('raw-inv').value = rInv;
             document.getElementById('raw-cli').value = rCli;
             document.getElementById('raw-terms').value = rTrm;
             document.getElementById('terms-container').innerText = rTrm;
+            
             inventory = rInv.split('\n').filter(l => l.includes('|')).map(l => { const p = l.split('|'); return { n: p[0].trim(), d: p[1].trim(), p: p[2].trim() }; });
             clients = rCli.split('\n').filter(l => l.includes('|')).map(l => { const p = l.split('|'); return { n: p[0].trim(), a: p[1].trim(), ph: p[2].trim() }; });
+            
             document.getElementById('client-select-dropdown').innerHTML = '<option value="">Sync Client...</option>' + clients.map((c, i) => `<option value="${i}">${c.n}</option>`).join('');
+            
+            updateSalesReport();
+        }
+
+        function updateSalesReport() {
+            let totalRev = 0;
+            inventory.forEach(item => { totalRev += (parseFloat(item.p) || 0); });
+            document.getElementById('stat-revenue').innerText = `RM ${totalRev.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('stat-clients').innerText = clients.length;
+            document.getElementById('stat-items').innerText = inventory.length;
         }
 
         function renderBlast() {
             document.getElementById('blast-list').innerHTML = clients.map(c => `
-                <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border">
                     <div><p class="text-xs font-black">${c.n}</p><p class="text-[10px] text-slate-400">${c.ph}</p></div>
-                    <button onclick="sendBlast('${c.ph}', '${c.n}')" class="bg-green-500 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-green-600 transition shadow-lg shadow-green-500/20">Send</button>
+                    <button onclick="sendBlast('${c.ph}', '${c.n}')" class="bg-green-500 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase shadow-lg shadow-green-500/20">Send</button>
                 </div>
             `).join('');
         }
@@ -222,7 +240,7 @@
         function addRow() {
             const row = document.createElement('tr'); row.className = "border-b border-slate-50";
             let opt = inventory.map((v, i) => `<option value="${i}">${v.n}</option>`).join('');
-            row.innerHTML = `<td class="py-6"><select onchange="fill(this)" class="no-print bg-slate-100 text-[10px] font-bold p-1 rounded mb-2 outline-none text-indigo-600 border-none">${opt ? '<option value="">Select Package...</option>'+opt : '<option>No Data</option>'}</select><div contenteditable="true" class="font-black text-sm text-slate-800">New Item</div><div contenteditable="true" class="text-xs text-slate-400 leading-tight">Project description...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black text-slate-900">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-200 hover:text-rose-500 font-bold transition text-xl">×</button></td>`;
+            row.innerHTML = `<td class="py-6"><select onchange="fill(this)" class="no-print bg-slate-100 text-[10px] font-bold p-1 rounded mb-2 outline-none text-indigo-600 border-none">${opt ? '<option value="">Select Package...</option>'+opt : '<option>No Data</option>'}</select><div contenteditable="true" class="font-black text-sm text-slate-800">New Item</div><div contenteditable="true" class="text-xs text-slate-400">Description...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black text-slate-900">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-200 hover:text-rose-500 font-bold transition text-xl">×</button></td>`;
             document.getElementById('item-list').appendChild(row);
         }
 
@@ -239,10 +257,10 @@
         }
         function triggerGallery(i) { gIdx = i; document.getElementById('gallery-in').click(); }
         function loadGallery(e) { const r = new FileReader(); r.onload = () => { const im = document.getElementById(`g-${gIdx}`); im.src = r.result; im.classList.remove('hidden'); im.nextElementSibling.classList.add('hidden'); }; r.readAsDataURL(e.target.files[0]); }
+        function generatePDF() { html2pdf().from(document.getElementById('document-content')).set({ margin:0, filename:'Chrono_V5_Report.pdf', html2canvas:{scale:3}, jsPDF:{format:'a4'} }).save(); }
         function updateTermsVisibility() { document.getElementById('terms-container').style.display = document.getElementById('terms-toggle').checked ? 'block' : 'none'; }
-        function generatePDF() { html2pdf().from(document.getElementById('document-content')).set({ margin:0, filename:'DB_Quotation_Pro.pdf', html2canvas:{scale:3}, jsPDF:{format:'a4'} }).save(); }
-        function exportData() { const d = { inv: document.getElementById('raw-inv').value, cli: document.getElementById('raw-cli').value, terms: document.getElementById('raw-terms').value }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], { type: 'application/json' })); a.download = 'ChronoDoc_Backup.json'; a.click(); }
-        function importData(e) { const reader = new FileReader(); reader.onload = (event) => { const d = JSON.parse(event.target.result); document.getElementById('raw-inv').value = d.inv; document.getElementById('raw-cli').value = d.cli; document.getElementById('raw-terms').value = d.terms || ""; saveDb(); alert('Backup Restored!'); }; reader.readAsText(e.target.files[0]); }
+        function exportData() { const d = { inv: document.getElementById('raw-inv').value, cli: document.getElementById('raw-cli').value, terms: document.getElementById('raw-terms').value }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], { type: 'application/json' })); a.download = 'Chrono_v5_Backup.json'; a.click(); }
+        function importData(e) { const reader = new FileReader(); reader.onload = (event) => { const d = JSON.parse(event.target.result); document.getElementById('raw-inv').value = d.inv; document.getElementById('raw-cli').value = d.cli; document.getElementById('raw-terms').value = d.terms || ""; saveDb(); }; reader.readAsText(e.target.files[0]); }
         window.onload = () => { syncData(); addRow(); };
     </script>
 </body>
