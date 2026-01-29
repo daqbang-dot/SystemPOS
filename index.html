@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Doc v7.4 | Social & History</title>
+    <title>Chrono-Doc v7.4 | Omni-Channel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -13,22 +13,17 @@
         .main-canvas { flex: 1; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 5rem 2rem; transition: all 0.5s ease; }
         .glass-paper { background: #ffffff; color: #0f172a; width: 210mm; min-height: 297mm; padding: 80px; box-shadow: 0 60px 120px -20px rgba(0, 0, 0, 0.8); position: relative; border-left: 20px solid #64748b; }
         .hidden-canvas { opacity: 0; transform: scale(0.98) translateY(20px); pointer-events: none; position: absolute; }
-        .theme-PENDING { border-left-color: #2563eb; } .theme-OVERDUE { border-left-color: #ef4444; } .theme-PAID { border-left-color: #10b981; } .theme-DRAFT { border-left-color: #64748b; }   
-        .status-DRAFT { background: #64748b; } .status-PAID { background: #10b981; } .status-PENDING { background: #3b82f6; } .status-OVERDUE { background: #ef4444; }
+        .status-PAID { background: #10b981; } .status-PENDING { background: #3b82f6; } .status-OVERDUE { background: #ef4444; } .status-DRAFT { background: #64748b; }
         .exclusive-title { font-size: 80px; font-weight: 900; line-height: 0.8; letter-spacing: -0.05em; color: #0f172a; font-style: italic; }
-        .data-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: #94a3b8; margin-bottom: 4px; }
-        table thead th { text-align: left; padding: 20px 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; border-bottom: 3px solid #0f172a; }
-        table tbody td { padding: 25px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 600; }
         .custom-scroll::-webkit-scrollbar { width: 4px; } .custom-scroll::-webkit-scrollbar-thumb { background: #312e81; border-radius: 10px; }
-        @media print { .no-print { display: none !important; } .main-canvas { background: white; padding: 0; } .glass-paper { border-left-width: 40px !important; box-shadow: none; width: 100%; margin: 0; } }
     </style>
 </head>
 <body>
 
     <div id="security-lock" class="fixed inset-0 bg-slate-950 z-[1000] flex flex-col items-center justify-center p-6 transition-all duration-500">
         <h2 class="text-white font-black text-xl mb-4 uppercase italic">Chrono System Locked</h2>
-        <input type="password" id="sys-pass" placeholder="••••" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center text-white font-black tracking-[1em] outline-none mb-4 w-64 focus:ring-2 ring-indigo-500">
-        <button onclick="unlockApp()" class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-indigo-500">Access Hub</button>
+        <input type="password" id="sys-pass" placeholder="••••" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center text-white font-black tracking-[1em] outline-none mb-4 w-64">
+        <button onclick="unlockApp()" class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase shadow-xl">Access Hub</button>
     </div>
 
     <aside class="sidebar custom-scroll no-print">
@@ -39,21 +34,18 @@
 
         <div class="bg-slate-900/80 p-5 rounded-3xl border border-white/5 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <label class="text-[9px] font-black text-indigo-400 uppercase tracking-widest italic">Live Intel</label>
+                <label class="text-[9px] font-black text-indigo-400 uppercase italic tracking-widest">Live Intel</label>
                 <span id="margin-tag" class="text-[8px] font-black bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 uppercase">0% Margin</span>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div><p class="text-[8px] font-bold text-slate-500 uppercase">Revenue</p><p id="stat-revenue" class="text-sm font-black text-white italic">RM 0.00</p></div>
                 <div class="text-right"><p class="text-[8px] font-bold text-rose-400 uppercase">Profit</p><p id="stat-profit" class="text-sm font-black text-emerald-400 italic">RM 0.00</p></div>
             </div>
-            <div class="pt-3 mt-3 border-t border-white/5">
-                <p class="text-[8px] font-bold text-slate-500 uppercase mb-2">Manual Expenses (RM)</p>
-                <input type="number" id="manual-expenses" oninput="calc()" value="0" class="w-full bg-slate-800 rounded-xl p-2 text-xs font-black text-white outline-none">
-            </div>
+            <input type="number" id="manual-expenses" oninput="calc()" value="0" class="w-full bg-slate-800 rounded-xl p-2 text-xs font-black text-white outline-none mt-3">
         </div>
 
         <div class="space-y-3 mb-6">
-            <label class="text-[9px] font-black text-amber-400 uppercase tracking-widest px-1 italic">Builder</label>
+            <label class="text-[9px] font-black text-amber-400 uppercase px-1 italic">Builder</label>
             <select id="status-select" onchange="updateStatus(this.value)" class="w-full bg-slate-800 rounded-xl p-4 text-xs font-black uppercase text-white outline-none border border-slate-700">
                 <option value="DRAFT">Draft Mode</option>
                 <option value="PENDING">Quotation</option>
@@ -61,86 +53,116 @@
                 <option value="PAID">Receipt</option>
             </select>
             <select id="client-dropdown" onchange="applyClient(this.value)" class="w-full bg-slate-800 rounded-xl p-4 text-xs font-bold text-indigo-300 outline-none border border-indigo-500/20"></select>
-            <button id="toggle-doc-btn" onclick="toggleCanvas()" class="w-full py-3 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 rounded-xl font-black text-[10px] uppercase">Show Canvas</button>
-            <button onclick="addRow()" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-[10px] uppercase shadow-lg shadow-indigo-600/20">＋ Add Line Item</button>
+            <button onclick="toggleCanvas()" class="w-full py-3 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 rounded-xl font-black text-[10px] uppercase">Toggle Canvas</button>
+            <button onclick="addRow()" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-[10px] uppercase shadow-lg">＋ Add Line Item</button>
         </div>
 
         <div class="space-y-2 mb-6">
-            <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1 italic">Growth Engine</label>
+            <label class="text-[9px] font-black text-slate-500 uppercase px-1 italic">Growth Engine</label>
             <button onclick="toggleBlast()" class="w-full py-4 bg-green-600 text-white rounded-xl font-black text-[10px] uppercase italic shadow-xl">WhatsApp Auto-Pilot</button>
             <button onclick="toggleSocial()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-black text-[10px] uppercase italic shadow-xl">Social Command Center</button>
             
-            <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest px-1 mt-4 block italic">Management</label>
+            <label class="text-[9px] font-black text-slate-500 uppercase px-1 mt-4 block italic">Management</label>
             <div class="flex gap-2">
-                <button onclick="toggleDb()" class="flex-1 py-4 bg-slate-800 text-slate-400 rounded-xl text-[10px] font-black uppercase border border-slate-700">System DB</button>
-                <button onclick="generatePDF()" class="flex-[2] py-4 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase shadow-xl italic">Export PDF</button>
+                <button onclick="toggleDb()" class="flex-1 py-4 bg-slate-800 text-slate-400 rounded-xl text-[10px] font-black uppercase">System DB</button>
+                <button onclick="generatePDF()" class="flex-[2] py-4 bg-white text-slate-900 rounded-xl font-black text-[10px] uppercase italic">Export PDF</button>
             </div>
-            <button onclick="toggleSettings()" class="w-full py-3 bg-slate-900 text-amber-500/50 rounded-xl font-black text-[9px] uppercase border border-amber-500/10 mt-2">⚙️ Brand Identity</button>
         </div>
     </aside>
 
     <main class="main-canvas">
-        <div id="document-content" class="glass-paper hidden-canvas theme-DRAFT">
+        <div id="document-content" class="glass-paper hidden-canvas">
             <header class="flex justify-between items-start mb-24">
                 <div class="w-2/3">
                     <img id="logo-img" src="https://via.placeholder.com/200x60?text=BRAND+IDENTITY" class="h-14 mb-12 grayscale brightness-0">
-                    <h2 id="dynamic-title" class="exclusive-title mb-6">QUOTATION</h2>
-                    <span id="doc-status-badge" class="px-5 py-1 text-[10px] text-white status-DRAFT font-black tracking-widest uppercase italic">DRAFT</span>
+                    <h2 id="dynamic-title" class="exclusive-title mb-6 italic font-black">QUOTATION</h2>
+                    <span id="doc-status-badge" class="px-5 py-1 text-[10px] text-white status-DRAFT font-black uppercase italic">DRAFT</span>
                 </div>
                 <div class="w-1/3 text-right">
-                    <h3 id="set-comp-name" class="font-black text-xl text-slate-900 uppercase italic tracking-tighter">YOUR BUSINESS</h3>
+                    <h3 id="set-comp-name" class="font-black text-xl uppercase italic">YOUR BUSINESS</h3>
                     <p id="set-comp-addr" class="text-[10px] text-slate-500 mt-4 uppercase">MALAYSIA HQ</p>
-                    <p id="set-comp-reg" class="text-indigo-600 font-black mt-2">REG_000000-X</p>
+                    <p id="set-comp-reg" class="text-indigo-600 font-black text-[10px]">REG_000000-X</p>
                 </div>
             </header>
             <table class="w-full mb-24">
-                <thead><tr><th class="w-3/5">Item Description</th><th class="text-center">Qty</th><th class="text-right">Rate</th><th class="text-right">Total</th><th class="no-print"></th></tr></thead>
-                <tbody id="item-list" class="text-slate-900 font-bold uppercase"></tbody>
+                <thead><tr><th class="w-3/5">Description</th><th class="text-center">Qty</th><th class="text-right">Rate</th><th class="text-right">Total</th><th class="no-print"></th></tr></thead>
+                <tbody id="item-list" class="uppercase font-bold"></tbody>
             </table>
             <div class="mt-auto flex justify-between items-end border-t pt-12">
-                <div class="w-1/2 bg-slate-50 p-6 rounded-2xl"><p id="grand-total" class="text-6xl font-black italic tracking-tighter">0.00</p></div>
+                <div class="w-1/2 bg-slate-50 p-6 rounded-2xl"><p id="grand-total" class="text-6xl font-black italic">RM 0.00</p></div>
             </div>
         </div>
     </main>
 
-    <div id="social-modal" class="hidden fixed inset-0 bg-slate-900/95 z-[800] flex items-center justify-center p-6 text-slate-900">
-        <div class="bg-white rounded-[3rem] p-10 w-full max-w-5xl shadow-2xl">
-            <div class="flex justify-between items-center mb-8"><h3 class="text-3xl font-black uppercase italic">Social Command Center</h3><button onclick="toggleSocial()" class="text-slate-300 text-3xl font-black">×</button></div>
+    <div id="social-modal" class="hidden fixed inset-0 bg-slate-900/95 z-[900] flex items-center justify-center p-6">
+        <div class="bg-white rounded-[3rem] p-10 w-full max-w-5xl shadow-2xl text-slate-900">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-3xl font-black uppercase italic tracking-tighter">Social Command Center</h3>
+                <button onclick="toggleSocial()" class="text-slate-300 text-4xl">&times;</button>
+            </div>
+            
             <div class="grid grid-cols-12 gap-8">
                 <div class="col-span-4 space-y-4">
-                    <textarea id="social-msg" class="w-full h-48 bg-slate-50 rounded-2xl p-5 text-sm font-bold border-none" placeholder="Write post content..."></textarea>
+                    <label class="text-[10px] font-black uppercase text-indigo-600">Compose Content</label>
+                    <textarea id="social-msg" class="w-full h-48 bg-slate-50 rounded-2xl p-5 text-sm font-bold italic border-none focus:ring-2 ring-indigo-500" placeholder="What's the business update?"></textarea>
+                    
                     <div class="bg-slate-50 p-4 rounded-2xl border">
+                        <label class="text-[10px] font-black uppercase block mb-2">Media Attachment</label>
                         <input type="file" id="social-file" class="hidden" accept="image/*" onchange="previewSocialImg(event)">
-                        <button onclick="document.getElementById('social-file').click()" class="w-full py-3 bg-white border border-dashed rounded-xl text-[9px] font-black">SELECT IMAGE</button>
-                        <img id="social-preview-img" class="hidden w-full h-32 object-cover rounded-xl mt-3">
+                        <button onclick="document.getElementById('social-file').click()" class="w-full py-3 bg-white border border-dashed rounded-xl text-[9px] font-black">UPLOAD MEDIA</button>
+                        <img id="social-preview-img" class="hidden w-full h-32 object-cover rounded-xl mt-3 shadow-sm">
                     </div>
                 </div>
+
                 <div class="col-span-8">
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <button onclick="launchSocial('fb')" class="py-4 bg-blue-600 text-white rounded-xl font-black text-xs uppercase">Post to Meta (FB/IG)</button>
-                        <button onclick="launchSocial('threads')" class="py-4 bg-black text-white rounded-xl font-black text-xs uppercase">Post to Threads</button>
-                        <button onclick="launchSocial('tiktok')" class="py-4 bg-rose-600 text-white rounded-xl font-black text-xs uppercase">Post to TikTok</button>
-                        <button onclick="copySocialText()" class="py-4 bg-slate-100 text-slate-600 rounded-xl font-black text-xs uppercase">Copy Text Only</button>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-6 bg-blue-50 rounded-[2rem] border border-blue-100 flex flex-col justify-between">
+                            <span class="font-black text-blue-600 italic">FACEBOOK / IG</span>
+                            <p class="text-[10px] text-blue-400 font-bold mb-4 uppercase">Direct Business Suite Launch</p>
+                            <button onclick="launchSocial('fb')" class="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-xs uppercase">Post to Meta</button>
+                        </div>
+                        <div class="p-6 bg-slate-50 rounded-[2rem] border border-slate-200 flex flex-col justify-between">
+                            <span class="font-black text-slate-900 italic">THREADS</span>
+                            <p class="text-[10px] text-slate-400 font-bold mb-4 uppercase">Threaded Conversational Post</p>
+                            <button onclick="launchSocial('threads')" class="w-full py-4 bg-black text-white rounded-xl font-black text-xs uppercase">Post to Threads</button>
+                        </div>
+                        <div class="p-6 bg-rose-50 rounded-[2rem] border border-rose-100 flex flex-col justify-between">
+                            <span class="font-black text-rose-600 italic">TIKTOK</span>
+                            <p class="text-[10px] text-rose-400 font-bold mb-4 uppercase">Video/Photo Mode Creator</p>
+                            <button onclick="launchSocial('tiktok')" class="w-full py-4 bg-rose-600 text-white rounded-xl font-black text-xs uppercase">Post to TikTok</button>
+                        </div>
+                        <div class="p-6 bg-indigo-50 rounded-[2rem] border border-indigo-100 flex flex-col justify-between">
+                            <span class="font-black text-indigo-600 italic">COPY OMNI-LINK</span>
+                            <p class="text-[10px] text-indigo-400 font-bold mb-4 uppercase">Copy Text & Prep Media</p>
+                            <button onclick="copySocialText()" id="copy-soc-btn" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-xs uppercase">Copy All</button>
+                        </div>
                     </div>
-                    <label class="text-[10px] font-black uppercase text-indigo-600">Post History Log</label>
-                    <div id="social-history" class="h-48 overflow-y-auto mt-2 space-y-2 text-[10px] custom-scroll"></div>
+                    
+                    <div class="mt-6 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                        <p class="text-[9px] font-black text-amber-700 uppercase italic">Pro-Tip: 2026 Direct Storage Posting</p>
+                        <p class="text-[9px] text-amber-600 font-bold">When the browser tab opens, your text is copied to your clipboard. Simply press Ctrl+V to paste your caption.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="blast-modal" class="hidden fixed inset-0 bg-slate-900/95 z-[800] flex items-center justify-center p-6 text-slate-900">
+    <div id="blast-modal" class="hidden fixed inset-0 bg-slate-900/95 z-[900] flex items-center justify-center p-6 text-slate-900">
         <div class="bg-white rounded-[3rem] p-10 w-full max-w-4xl shadow-2xl">
-            <div class="flex justify-between items-center mb-8"><h3 class="text-3xl font-black uppercase italic">WhatsApp Auto-Pilot</h3><button onclick="toggleBlast()" class="text-slate-300 text-3xl font-black">×</button></div>
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-3xl font-black uppercase italic">WhatsApp Auto-Pilot</h3>
+                <button onclick="toggleBlast()" class="text-slate-300 text-3xl font-black">&times;</button>
+            </div>
             <div class="grid grid-cols-12 gap-8">
                 <div class="col-span-5 space-y-6">
-                    <button id="auto-pilot-btn" onclick="startAutoPilot()" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase italic">Launch Campaign</button>
+                    <button id="auto-pilot-btn" onclick="startAutoPilot()" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase italic shadow-xl">Launch Campaign</button>
                     <div class="bg-slate-50 p-6 rounded-3xl border">
                         <input type="file" id="blast-file" class="hidden" accept="image/*" onchange="previewBlastImg(event)">
-                        <button onclick="document.getElementById('blast-file').click()" class="w-full py-3 bg-white border-2 border-dashed rounded-xl text-[9px] font-black uppercase">Select Image</button>
+                        <button onclick="document.getElementById('blast-file').click()" class="w-full py-3 bg-white border border-dashed rounded-xl text-[9px] font-black">ATTACH IMAGE</button>
                         <img id="blast-preview-img" class="hidden w-full h-32 object-cover rounded-xl mt-4">
                     </div>
                     <input type="range" id="delay-slider" min="5" max="120" value="15" oninput="updateDelayLabel(this.value)" class="w-full accent-indigo-600">
+                    <label class="text-[10px] font-black">DELAY: <span id="delay-val">15s</span></label>
                 </div>
                 <div class="col-span-7">
                     <textarea id="blast-msg" class="w-full h-24 bg-slate-50 rounded-2xl p-4 text-xs font-bold italic" placeholder="Hi [Name]..."></textarea>
@@ -150,66 +172,68 @@
         </div>
     </div>
 
-    <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 z-[900] flex items-center justify-center p-6 text-slate-900">
+    <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 z-[950] flex items-center justify-center p-6 text-slate-900">
         <div class="bg-white rounded-[3rem] p-10 w-full max-w-5xl shadow-2xl">
             <h3 class="text-2xl font-black mb-6 uppercase italic">System DB</h3>
-            <div class="grid grid-cols-4 gap-6">
-                <div><label class="text-[10px] font-black text-indigo-500 uppercase">Inventory</label><textarea id="raw-inv" class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-[10px] font-mono"></textarea></div>
-                <div><label class="text-[10px] font-black text-indigo-500 uppercase">CRM</label><textarea id="raw-cli" class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-[10px] font-mono"></textarea></div>
-                <div><label class="text-[10px] font-black text-indigo-500 uppercase">Terms</label><textarea id="raw-terms" class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-[10px] font-mono"></textarea></div>
-                <div><label class="text-[10px] font-black text-rose-500 uppercase">Post History</label><textarea id="raw-history" class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-[10px] font-mono" readonly></textarea></div>
+            <div class="grid grid-cols-3 gap-6 h-96">
+                <div><label class="text-[10px] font-black text-indigo-500 uppercase">Inventory</label><textarea id="raw-inv" class="w-full h-full bg-slate-50 rounded-2xl p-4 text-[10px] font-mono"></textarea></div>
+                <div><label class="text-[10px] font-black text-indigo-500 uppercase">CRM</label><textarea id="raw-cli" class="w-full h-full bg-slate-50 rounded-2xl p-4 text-[10px] font-mono"></textarea></div>
+                <div><label class="text-[10px] font-black text-indigo-500 uppercase">Terms</label><textarea id="raw-terms" class="w-full h-full bg-slate-50 rounded-2xl p-4 text-[10px] font-mono"></textarea></div>
             </div>
-            <div class="mt-8 flex justify-end gap-4"><button onclick="toggleDb()">Close</button><button onclick="saveDb()" class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black uppercase italic">Save Changes</button></div>
-        </div>
-    </div>
-
-    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-900/95 z-[800] flex items-center justify-center p-6 text-slate-900">
-        <div class="bg-white rounded-[3rem] p-10 w-full max-w-lg shadow-2xl">
-            <input type="text" id="in-comp-name" placeholder="Business Name" class="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold uppercase mb-4">
-            <button onclick="saveIdentity()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase">Update</button>
+            <div class="mt-8 flex justify-end gap-4"><button onclick="toggleDb()">Close</button><button onclick="saveDb()" class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black uppercase italic">Save DB</button></div>
         </div>
     </div>
 
     <script>
-        let inventory = []; let clients = []; let isAuto = false; let queueIdx = 0; let blastMedia = null; let socialHistory = [];
+        let inventory = []; let clients = []; let isAuto = false; let queueIdx = 0; let blastMedia = null;
 
         function unlockApp() { if(document.getElementById('sys-pass').value === "1234") { document.getElementById('security-lock').classList.add('hidden'); sessionStorage.setItem('chrono_auth', 'true'); } }
         window.onload = () => { if(sessionStorage.getItem('chrono_auth') === 'true') document.getElementById('security-lock').classList.add('hidden'); syncData(); };
 
         function toggleCanvas() { document.getElementById('document-content').classList.toggle('hidden-canvas'); }
         function toggleBlast() { document.getElementById('blast-modal').classList.toggle('hidden'); if(!document.getElementById('blast-modal').classList.contains('hidden')) renderBlast(); }
-        function toggleSocial() { document.getElementById('social-modal').classList.toggle('hidden'); updateSocialHistoryUI(); }
+        function toggleSocial() { document.getElementById('social-modal').classList.toggle('hidden'); }
         function toggleDb() { document.getElementById('db-modal').classList.toggle('hidden'); }
         function updateDelayLabel(v) { document.getElementById('delay-val').innerText = v + 's'; }
 
-        // SOCIAL FUNCTIONS
-        function previewSocialImg(e) { const r = new FileReader(); r.onload = () => { document.getElementById('social-preview-img').src = r.result; document.getElementById('social-preview-img').classList.remove('hidden'); }; r.readAsDataURL(e.target.files[0]); }
-        function copySocialText() { navigator.clipboard.writeText(document.getElementById('social-msg').value); }
+        // SOCIAL LOGIC
+        function previewSocialImg(e) {
+            const r = new FileReader(); r.onload = () => { 
+                document.getElementById('social-preview-img').src = r.result; 
+                document.getElementById('social-preview-img').classList.remove('hidden'); 
+            }; r.readAsDataURL(e.target.files[0]);
+        }
+        function copySocialText() {
+            const txt = document.getElementById('social-msg').value;
+            navigator.clipboard.writeText(txt);
+            document.getElementById('copy-soc-btn').innerText = "COPIED!";
+            setTimeout(() => document.getElementById('copy-soc-btn').innerText = "COPY ALL", 2000);
+        }
         function launchSocial(platform) {
-            const msg = document.getElementById('social-msg').value;
             copySocialText();
-            const log = `${new Date().toLocaleString()} | ${platform.toUpperCase()} | ${msg.substring(0,20)}...`;
-            socialHistory.unshift(log);
-            localStorage.setItem('chrono_social_history', socialHistory.join('\n'));
-            document.getElementById('raw-history').value = socialHistory.join('\n');
-            updateSocialHistoryUI();
-            const urls = { fb: "https://business.facebook.com/latest/composer", threads: "https://www.threads.net/", tiktok: "https://www.tiktok.com/upload" };
+            const urls = {
+                fb: "https://business.facebook.com/latest/composer",
+                threads: "https://www.threads.net/",
+                tiktok: "https://www.tiktok.com/upload"
+            };
             window.open(urls[platform], '_blank');
         }
-        function updateSocialHistoryUI() {
-            document.getElementById('social-history').innerHTML = socialHistory.map(h => `<div class="p-2 bg-slate-50 rounded border border-slate-100">${h}</div>`).join('');
-        }
 
-        // PRESERVED FUNCTIONS
-        function previewBlastImg(e) { const r = new FileReader(); r.onload = () => { document.getElementById('blast-preview-img').src = r.result; document.getElementById('blast-preview-img').classList.remove('hidden'); blastMedia = r.result; }; r.readAsDataURL(e.target.files[0]); }
+        // PRESERVED v7.3.2 FUNCTIONS
+        function previewBlastImg(e) {
+            const r = new FileReader(); r.onload = () => { 
+                document.getElementById('blast-preview-img').src = r.result; 
+                document.getElementById('blast-preview-img').classList.remove('hidden'); 
+                blastMedia = r.result; 
+            }; r.readAsDataURL(e.target.files[0]);
+        }
         function syncData() {
-            const rInv = localStorage.getItem('v72_inv') || ""; const rCli = localStorage.getItem('v72_cli') || ""; const rHis = localStorage.getItem('chrono_social_history') || "";
-            document.getElementById('raw-inv').value = rInv; document.getElementById('raw-cli').value = rCli; document.getElementById('raw-history').value = rHis;
+            const rInv = localStorage.getItem('v72_inv') || ""; const rCli = localStorage.getItem('v72_cli') || "";
+            document.getElementById('raw-inv').value = rInv; document.getElementById('raw-cli').value = rCli;
             inventory = rInv.split('\n').filter(l => l.includes('|')).map(l => { const p = l.split('|'); return { n: p[0].trim(), d: p[1].trim(), s: p[2].trim(), c: p[3].trim() }; });
             clients = rCli.split('\n').filter(l => l.includes('|')).map(l => { const p = l.split('|'); return { n: p[0].trim(), ph: p[2].trim(), a: p[1].trim() }; });
-            socialHistory = rHis.split('\n').filter(l => l.length > 5);
             document.getElementById('client-dropdown').innerHTML = '<option value="">Select Lead...</option>' + clients.map((c, i) => `<option value="${i}">${c.n}</option>`).join('');
-            applyIdentity(); calc();
+            calc();
         }
         function addRow() {
             const row = document.createElement('tr'); row.className = "border-b border-slate-50";
@@ -225,6 +249,10 @@
             document.getElementById('stat-revenue').innerText = `RM ${total.toFixed(2)}`;
             document.getElementById('grand-total').innerText = `RM ${(total * 1.06).toFixed(2)}`;
         }
+        function renderBlast() {
+            const t = document.getElementById('grand-total').innerText;
+            document.getElementById('blast-list').innerHTML = clients.map(c => `<div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center mb-2"><span class="text-[10px] font-black uppercase">${c.n}</span><button class="send-btn bg-slate-200 text-slate-500 text-[9px] px-3 py-1 rounded-lg" data-ph="${c.ph}" data-name="${c.n}" data-total="${t}">QUEUED</button></div>`).join('');
+        }
         function startAutoPilot() { isAuto = !isAuto; queueIdx = 0; document.getElementById('auto-pilot-btn').innerText = isAuto ? "ABORT" : "LAUNCH"; runQueue(); }
         async function runQueue() {
             if(!isAuto) return;
@@ -233,27 +261,24 @@
             const btn = btns[queueIdx];
             let time = parseInt(document.getElementById('delay-slider').value);
             const timer = setInterval(() => {
-                btn.innerText = `IN ${time}s`; time--;
+                btn.innerText = `SEND IN ${time}s`; time--;
                 if(time < 0) {
                     clearInterval(timer);
                     const msg = document.getElementById('blast-msg').value.replace('[Name]', btn.dataset.name).replace('[Total]', btn.dataset.total);
                     window.open(`https://wa.me/${btn.dataset.ph.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
-                    btn.innerText = "DONE ✅"; btn.className = "bg-green-500 text-white text-[9px] px-3 py-1 rounded-lg";
+                    btn.innerText = "SENT ✅"; btn.className = "bg-green-500 text-white text-[9px] px-3 py-1 rounded-lg";
                     queueIdx++; setTimeout(runQueue, 1500);
                 }
             }, 1000);
         }
         function saveDb() { localStorage.setItem('v72_inv', document.getElementById('raw-inv').value); localStorage.setItem('v72_cli', document.getElementById('raw-cli').value); syncData(); toggleDb(); }
-        function saveIdentity() { const data = { n: document.getElementById('in-comp-name').value }; localStorage.setItem('chrono_identity', JSON.stringify(data)); applyIdentity(); }
-        function applyIdentity() { const data = JSON.parse(localStorage.getItem('chrono_identity')) || {n: 'YOUR BUSINESS'}; document.getElementById('set-comp-name').innerText = data.n; }
-        function renderBlast() {
-            const t = document.getElementById('grand-total').innerText;
-            document.getElementById('blast-list').innerHTML = clients.map(c => `<div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center mb-2"><span class="text-[10px] font-black uppercase">${c.n}</span><button class="send-btn bg-slate-200 text-slate-500 text-[9px] px-3 py-1 rounded-lg" data-ph="${c.ph}" data-name="${c.n}" data-total="${t}">QUEUED</button></div>`).join('');
-        }
-        function generatePDF() { html2pdf().from(document.getElementById('document-content')).set({ margin:0, filename:'Chrono_Doc.pdf', html2canvas:{scale:3}, jsPDF:{format:'a4'} }).save(); }
-        function updateStatus(v) { document.getElementById('doc-status-badge').innerText = v; document.getElementById('doc-status-badge').className = `px-5 py-1 text-[10px] text-white status-${v} font-black uppercase italic`; }
-        function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
         function applyClient(i) { const c = clients[i]; document.getElementById('c-name').innerText = c.n; }
+        function generatePDF() { html2pdf().from(document.getElementById('document-content')).set({ margin:0, filename:'Chrono_Doc.pdf', html2canvas:{scale:3}, jsPDF:{format:'a4'} }).save(); }
+        function updateStatus(v) { 
+            document.getElementById('doc-status-badge').innerText = v; 
+            document.getElementById('doc-status-badge').className = `px-5 py-1 text-[10px] text-white status-${v} font-black uppercase italic`;
+            document.getElementById('dynamic-title').innerText = v === 'PAID' ? 'OFFICIAL RECEIPT' : (v === 'OVERDUE' ? 'TAX INVOICE' : 'QUOTATION');
+        }
     </script>
 </body>
 </html>
