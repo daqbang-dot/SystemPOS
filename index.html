@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Doc v4.6 | Pro Visual CRM</title>
+    <title>Chrono-Doc v4.8 | Official Stamp Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -11,11 +11,13 @@
         body { font-family: 'Space Grotesk', sans-serif; background: #0f172a; color: #f8fafc; }
         .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; }
         .sidebar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-right: 1px solid #1e293b; }
-        .glass-paper { background: white; color: #1e293b; border-radius: 40px; width: 210mm; min-height: 297mm; margin: 2rem auto; padding: 50px; box-shadow: 0 0 80px rgba(0,0,0,0.5); }
+        .glass-paper { background: white; color: #1e293b; border-radius: 40px; width: 210mm; min-height: 297mm; margin: 2rem auto; padding: 50px; box-shadow: 0 0 80px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .neon-btn { background: linear-gradient(135deg, #6366f1, #a855f7); transition: 0.3s; }
         .neon-btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(99, 102, 241, 0.6); }
         .gallery-slot { border: 2px dashed #e2e8f0; border-radius: 20px; transition: 0.3s; }
-        .gallery-slot:hover { border-color: #6366f1; background: #f8fafc; }
+        .stamp-box { border: 2px dashed #6366f1; border-radius: 15px; width: 140px; height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #f5f3ff; transition: 0.3s; }
+        .stamp-box:hover { background: #ede9fe; border-style: solid; }
+        .terms-text { font-size: 8px; line-height: 1.4; color: #94a3b8; column-count: 2; column-gap: 20px; border-top: 1px solid #f1f5f9; padding-top: 15px; margin-top: 25px; }
         @media print { .no-print { display: none !important; } body { background: white !important; } .glass-paper { margin: 0; box-shadow: none; border-radius: 0; width: 100%; } }
     </style>
 </head>
@@ -25,25 +27,29 @@
     <aside class="no-print w-full md:w-80 sidebar p-8 flex flex-col gap-6 z-10">
         <div class="flex items-center gap-3 mb-4">
             <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center font-black text-white">DB</div>
-            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Chrono v4.6</h1>
+            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Chrono v4.8</h1>
         </div>
 
         <button onclick="addRow()" class="neon-btn py-4 rounded-2xl font-black text-xs text-white uppercase tracking-widest">＋ New Line Item</button>
 
         <div class="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 space-y-4">
-            <label class="text-[10px] font-black text-indigo-400 uppercase">Client Control</label>
+            <label class="text-[10px] font-black text-indigo-400 uppercase">Client Sync</label>
             <select id="client-select-dropdown" onchange="applyClient(this.value)" class="w-full bg-slate-800 border-none rounded-xl p-3 text-xs font-bold text-indigo-300 outline-none"></select>
-            <button onclick="toggleBlast()" class="w-full py-3 bg-green-500/10 text-green-400 border border-green-500/20 rounded-xl text-[10px] font-black uppercase">WhatsApp Blast Tool</button>
+            <button onclick="toggleBlast()" class="w-full py-3 bg-green-500/10 text-green-400 border border-green-500/20 rounded-xl text-[10px] font-black uppercase">WhatsApp Blast</button>
+            <div class="flex items-center justify-between px-1 pt-2 border-t border-slate-800">
+                <span class="text-[10px] font-black text-slate-400">Terms</span>
+                <input type="checkbox" id="terms-toggle" checked onchange="updateTermsVisibility()" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-600">
+            </div>
         </div>
 
         <div class="mt-auto space-y-3">
-            <button onclick="toggleDb()" class="w-full py-3 bg-slate-800 text-slate-300 rounded-xl text-[10px] font-black uppercase">Database & Backup</button>
-            <button onclick="generatePDF()" class="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase">Download PDF</button>
+            <button onclick="toggleDb()" class="w-full py-3 bg-slate-800 text-slate-300 rounded-xl text-[10px] font-black uppercase tracking-widest">Database Manager</button>
+            <button onclick="generatePDF()" class="w-full py-4 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase shadow-xl">Download PDF</button>
         </div>
     </aside>
 
     <main class="flex-1 p-4 md:p-12 overflow-y-auto">
-        <div id="document-content" class="glass-paper flex flex-col">
+        <div id="document-content" class="glass-paper">
             <header class="flex justify-between items-start mb-12">
                 <div class="space-y-4">
                     <img id="logo-img" src="https://via.placeholder.com/180x60?text=LOGO" class="h-12 object-contain cursor-pointer" onclick="document.getElementById('logo-in').click()">
@@ -51,7 +57,7 @@
                     <h2 id="doc-title" class="text-5xl font-black tracking-tighter text-slate-900 uppercase">QUOTATION</h2>
                 </div>
                 <div class="text-right">
-                    <h3 contenteditable="true" class="font-black text-xl">DB SMARTHOME & SECURITY</h3>
+                    <h3 contenteditable="true" class="font-black text-xl text-slate-900">DB SMARTHOME & SECURITY</h3>
                     <p contenteditable="true" class="text-[10px] text-slate-400 font-bold uppercase">Gemas, Negeri Sembilan | 003556730-T</p>
                 </div>
             </header>
@@ -59,8 +65,8 @@
             <div class="grid grid-cols-2 gap-10 mb-10 border-y border-slate-100 py-8 text-slate-900">
                 <div>
                     <h4 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">Recipient</h4>
-                    <p id="c-name" contenteditable="true" class="text-2xl font-black">Client Name</p>
-                    <p id="c-addr" contenteditable="true" class="text-xs text-slate-500 mt-1">Address line here...</p>
+                    <p id="c-name" contenteditable="true" class="text-2xl font-black leading-none">Client Name</p>
+                    <p id="c-addr" contenteditable="true" class="text-xs text-slate-500 mt-2">Client Address...</p>
                     <input type="hidden" id="c-phone">
                 </div>
                 <div class="text-right text-xs font-bold">
@@ -73,7 +79,7 @@
                 <table class="w-full mb-10 text-slate-900">
                     <thead class="text-[10px] font-black text-slate-400 uppercase border-b">
                         <tr>
-                            <th class="py-4 text-left">Description</th>
+                            <th class="py-4 text-left">Solution Details</th>
                             <th class="py-4 text-center w-20">Qty</th>
                             <th class="py-4 text-right w-32">Price (RM)</th>
                             <th class="py-4 text-right w-32">Total</th>
@@ -84,28 +90,34 @@
                 </table>
             </div>
 
-            <div class="flex justify-between items-end mt-auto gap-10">
-                <div class="flex-1">
-                    <h4 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-4">Installation Assets / Proof</h4>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="gallery-slot h-28 flex items-center justify-center cursor-pointer relative overflow-hidden" onclick="triggerGallery(0)">
-                            <img id="g-0" class="w-full h-full object-cover hidden">
-                            <span class="text-[9px] font-black text-slate-300 uppercase">+ Add Photo</span>
+            <div class="grid grid-cols-12 gap-8 items-end border-t border-slate-50 pt-8">
+                <div class="col-span-4">
+                    <h4 class="text-[10px] font-black text-indigo-500 uppercase mb-4 tracking-widest">Project Photos</h4>
+                    <div class="flex gap-2">
+                        <div class="gallery-slot w-20 h-20 flex items-center justify-center cursor-pointer overflow-hidden" onclick="triggerGallery(0)">
+                            <img id="g-0" class="w-full h-full object-cover hidden"><span class="text-[8px] text-slate-300 font-bold">+</span>
                         </div>
-                        <div class="gallery-slot h-28 flex items-center justify-center cursor-pointer relative overflow-hidden" onclick="triggerGallery(1)">
-                            <img id="g-1" class="w-full h-full object-cover hidden">
-                            <span class="text-[9px] font-black text-slate-300 uppercase">+ Add Photo</span>
+                        <div class="gallery-slot w-20 h-20 flex items-center justify-center cursor-pointer overflow-hidden" onclick="triggerGallery(1)">
+                            <img id="g-1" class="w-full h-full object-cover hidden"><span class="text-[8px] text-slate-300 font-bold">+</span>
                         </div>
-                        <div class="gallery-slot h-28 flex items-center justify-center cursor-pointer relative overflow-hidden" onclick="triggerGallery(2)">
-                            <img id="g-2" class="w-full h-full object-cover hidden">
-                            <span class="text-[9px] font-black text-slate-300 uppercase">+ Add Photo</span>
-                        </div>
+                        <input type="file" id="gallery-in" class="hidden" onchange="loadGallery(event)">
                     </div>
-                    <input type="file" id="gallery-in" class="hidden" onchange="loadGallery(event)">
                 </div>
 
-                <div class="w-64 text-slate-900">
-                    <div class="space-y-2 mb-6 text-xs font-bold">
+                <div class="col-span-3 flex flex-col items-center">
+                    <div class="stamp-box overflow-hidden relative" onclick="document.getElementById('stamp-in').click()">
+                        <img id="stamp-img" class="w-full h-full object-contain hidden">
+                        <div id="stamp-label" class="text-center">
+                            <span class="text-[10px] font-black text-indigo-400 uppercase">OFFICIAL</span><br>
+                            <span class="text-[8px] font-bold text-indigo-300 uppercase">STAMP HERE</span>
+                        </div>
+                    </div>
+                    <input type="file" id="stamp-in" class="hidden" onchange="loadFile(event, 'stamp-img', true)">
+                    <p class="text-[8px] font-black text-slate-400 uppercase mt-2 tracking-widest italic">Authorized Stamp</p>
+                </div>
+
+                <div class="col-span-5 text-slate-900">
+                    <div class="space-y-2 mb-4 text-xs font-bold text-right pr-2">
                         <div class="flex justify-between"><span>Subtotal</span><span id="sub-total">0.00</span></div>
                         <div class="flex justify-between text-indigo-500"><span>SST (6%)</span><span id="tax-val">0.00</span></div>
                     </div>
@@ -115,32 +127,35 @@
                     </div>
                 </div>
             </div>
+
+            <div id="terms-container" class="terms-text"></div>
         </div>
     </main>
 
     <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-xl flex items-center justify-center z-50 p-6 text-slate-900">
-        <div class="bg-white rounded-[2.5rem] p-10 w-full max-w-4xl shadow-2xl">
-            <div class="flex justify-between mb-6">
-                <h3 class="text-2xl font-black">Database Manager</h3>
-                <div class="flex gap-2">
-                    <button onclick="exportData()" class="bg-slate-100 px-4 py-2 rounded-xl text-[10px] font-black uppercase">Export JSON</button>
-                    <label class="bg-indigo-100 text-indigo-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase cursor-pointer">Import JSON <input type="file" id="import-file" class="hidden" onchange="importData(event)"></label>
-                </div>
+        <div class="bg-white rounded-[2.5rem] p-10 w-full max-w-5xl shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-black">DATABASE MANAGER</h3>
+                <button onclick="exportData()" class="bg-slate-100 px-4 py-2 rounded-xl text-[10px] font-black uppercase">Export Backup</button>
             </div>
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-3 gap-6">
                 <textarea id="raw-inv" placeholder="Item | Desc | Price" class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-xs font-mono"></textarea>
                 <textarea id="raw-cli" placeholder="Name | Address | Phone" class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-xs font-mono"></textarea>
+                <textarea id="raw-terms" placeholder="Terms Content..." class="w-full h-64 bg-slate-50 rounded-2xl p-4 text-xs font-mono"></textarea>
             </div>
-            <div class="mt-6 flex justify-end gap-3"><button onclick="toggleDb()" class="text-slate-400 font-bold px-4">Close</button><button onclick="saveDb()" class="neon-btn px-8 py-3 text-white font-black rounded-xl uppercase text-xs">Save Changes</button></div>
+            <div class="mt-8 flex justify-end gap-3">
+                <button onclick="toggleDb()" class="text-slate-400 font-bold px-4">Close</button>
+                <button onclick="saveDb()" class="neon-btn px-8 py-3 text-white font-black rounded-xl uppercase text-xs">Sync & Save</button>
+            </div>
         </div>
     </div>
 
     <div id="blast-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-xl flex items-center justify-center z-50 p-6 text-slate-900">
         <div class="bg-white rounded-[2.5rem] p-10 w-full max-w-xl shadow-2xl">
             <h3 class="text-2xl font-black mb-4">WhatsApp Blast Tool</h3>
-            <textarea id="blast-msg" class="w-full h-32 bg-slate-50 rounded-2xl p-4 text-sm mb-4" placeholder="Hi [Name], your system check-up is due..."></textarea>
-            <div id="blast-list" class="max-h-64 overflow-y-auto space-y-2"></div>
-            <button onclick="toggleBlast()" class="mt-6 text-slate-400 font-bold uppercase text-xs">Close</button>
+            <textarea id="blast-msg" class="w-full h-32 bg-slate-50 rounded-2xl p-4 text-sm mb-4 outline-none" placeholder="Hi [Name], message content..."></textarea>
+            <div id="blast-list" class="max-h-60 overflow-y-auto space-y-2"></div>
+            <button onclick="toggleBlast()" class="mt-6 text-slate-400 font-bold text-xs">DISMISS</button>
         </div>
     </div>
 
@@ -151,30 +166,23 @@
         function toggleBlast() { document.getElementById('blast-modal').classList.toggle('hidden'); if(!document.getElementById('blast-modal').classList.contains('hidden')) renderBlast(); }
 
         function saveDb() {
-            localStorage.setItem('v46_inv', document.getElementById('raw-inv').value);
-            localStorage.setItem('v46_cli', document.getElementById('raw-cli').value);
+            localStorage.setItem('v48_inv', document.getElementById('raw-inv').value);
+            localStorage.setItem('v48_cli', document.getElementById('raw-cli').value);
+            localStorage.setItem('v48_terms', document.getElementById('raw-terms').value);
             syncData(); toggleDb();
         }
 
         function syncData() {
-            const rInv = localStorage.getItem('v46_inv') || "CCTV 4-Cam | Complete Installation | 2500";
-            const rCli = localStorage.getItem('v46_cli') || "Client Name | Street 1 | 60123456789";
+            const rInv = localStorage.getItem('v48_inv') || "CCTV Solution | 4 Cam Pack | 2500";
+            const rCli = localStorage.getItem('v48_cli') || "Client Name | Street | 60123456789";
+            const rTrm = localStorage.getItem('v48_terms') || "1. Terms clause here...";
             document.getElementById('raw-inv').value = rInv;
             document.getElementById('raw-cli').value = rCli;
+            document.getElementById('raw-terms').value = rTrm;
+            document.getElementById('terms-container').innerText = rTrm;
             inventory = rInv.split('\n').filter(l => l.includes('|')).map(l => { const p = l.split('|'); return { n: p[0].trim(), d: p[1].trim(), p: p[2].trim() }; });
             clients = rCli.split('\n').filter(l => l.includes('|')).map(l => { const p = l.split('|'); return { n: p[0].trim(), a: p[1].trim(), ph: p[2].trim() }; });
             document.getElementById('client-select-dropdown').innerHTML = '<option value="">Sync Client...</option>' + clients.map((c, i) => `<option value="${i}">${c.n}</option>`).join('');
-        }
-
-        function exportData() {
-            const blob = new Blob([JSON.stringify({ inv: document.getElementById('raw-inv').value, cli: document.getElementById('raw-cli').value })], { type: 'application/json' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click();
-        }
-
-        function importData(e) {
-            const reader = new FileReader();
-            reader.onload = (event) => { const d = JSON.parse(event.target.result); document.getElementById('raw-inv').value = d.inv; document.getElementById('raw-cli').value = d.cli; saveDb(); };
-            reader.readAsText(e.target.files[0]);
         }
 
         function renderBlast() {
@@ -194,17 +202,26 @@
         function addRow() {
             const row = document.createElement('tr'); row.className = "border-b border-slate-50";
             let opt = inventory.map((v, i) => `<option value="${i}">${v.n}</option>`).join('');
-            row.innerHTML = `<td class="py-6"><select onchange="fill(this)" class="no-print bg-slate-100 text-[10px] font-bold p-1 rounded mb-2 outline-none text-indigo-600"><option value="">Select...</option>${opt}</select><div contenteditable="true" class="font-black text-sm">Item</div><div contenteditable="true" class="text-xs text-slate-400">Desc...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-200 hover:text-rose-500 font-bold">×</button></td>`;
+            row.innerHTML = `<td class="py-6"><select onchange="fill(this)" class="no-print bg-slate-100 text-[10px] font-bold p-1 rounded mb-2 outline-none text-indigo-600"><option value="">Select Item...</option>${opt}</select><div contenteditable="true" class="font-black text-sm text-slate-800">Item</div><div contenteditable="true" class="text-xs text-slate-400">Desc...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black text-slate-900">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-200 hover:text-rose-500 font-bold">×</button></td>`;
             document.getElementById('item-list').appendChild(row);
         }
 
-        function fill(el) { const i = inventory[el.value]; const r = el.closest('tr'); r.cells[0].querySelectorAll('div')[0].innerText = i.n; r.cells[0].querySelectorAll('div')[1].innerText = i.d; r.cells[2].innerText = i.p; calc(); }
+        function fill(el) { if(!el.value) return; const i = inventory[el.value]; const r = el.closest('tr'); r.cells[0].querySelectorAll('div')[0].innerText = i.n; r.cells[0].querySelectorAll('div')[1].innerText = i.d; r.cells[2].innerText = i.p; calc(); }
         function applyClient(i) { if(i==="") return; const c = clients[i]; document.getElementById('c-name').innerText = c.n; document.getElementById('c-addr').innerText = c.a; document.getElementById('c-phone').value = c.ph; }
         function calc() { let s = 0; document.querySelectorAll("#item-list tr").forEach(r => { const q = parseFloat(r.cells[1].innerText)||0; const p = parseFloat(r.cells[2].innerText.replace(/[^0-9.]/g,''))||0; const t = q*p; r.cells[3].innerText = t.toFixed(2); s += t; }); const tx = s * 0.06; document.getElementById('sub-total').innerText = s.toFixed(2); document.getElementById('tax-val').innerText = tx.toFixed(2); document.getElementById('grand-total').innerText = `RM ${(s+tx).toFixed(2)}`; }
+        function loadFile(e, id, isStamp = false) { 
+            const r = new FileReader(); 
+            r.onload = () => { 
+                const im = document.getElementById(id); im.src = r.result; im.classList.remove('hidden'); 
+                if(isStamp) document.getElementById('stamp-label').classList.add('hidden');
+            }; 
+            r.readAsDataURL(e.target.files[0]); 
+        }
         function triggerGallery(i) { gIdx = i; document.getElementById('gallery-in').click(); }
         function loadGallery(e) { const r = new FileReader(); r.onload = () => { const im = document.getElementById(`g-${gIdx}`); im.src = r.result; im.classList.remove('hidden'); im.nextElementSibling.classList.add('hidden'); }; r.readAsDataURL(e.target.files[0]); }
-        function loadFile(e, id) { const r = new FileReader(); r.onload = () => document.getElementById(id).src = r.result; r.readAsDataURL(e.target.files[0]); }
-        function generatePDF() { html2pdf().from(document.getElementById('document-content')).set({ margin:0, filename:'Quotation.pdf', html2canvas:{scale:3}, jsPDF:{format:'a4'} }).save(); }
+        function updateTermsVisibility() { document.getElementById('terms-container').style.display = document.getElementById('terms-toggle').checked ? 'block' : 'none'; }
+        function generatePDF() { html2pdf().from(document.getElementById('document-content')).set({ margin:0, filename:'DB_Quotation.pdf', html2canvas:{scale:3}, jsPDF:{format:'a4'} }).save(); }
+        function exportData() { const d = { inv: document.getElementById('raw-inv').value, cli: document.getElementById('raw-cli').value, terms: document.getElementById('raw-terms').value }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], { type: 'application/json' })); a.download = 'chrono_backup.json'; a.click(); }
         window.onload = () => { syncData(); addRow(); };
     </script>
 </body>
