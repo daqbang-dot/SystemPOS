@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Doc v7.2 | Executive Command</title>
+    <title>Chrono-Doc v7.3 | Exclusive Executive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -14,28 +14,34 @@
         .sidebar { background: #0f172a; border-right: 1px solid #1e293b; width: 360px; flex-shrink: 0; display: flex; flex-direction: column; padding: 1.5rem; overflow-y: auto; z-index: 50; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
         
         /* CANVAS AREA */
-        .main-canvas { flex: 1; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 4rem 2rem; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .main-canvas { flex: 1; background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 5rem 2rem; transition: all 0.5s ease; }
 
-        /* EXECUTIVE PAPER */
+        /* 💎 EXCLUSIVE "BLACK-LABEL" CANVAS */
         .glass-paper { 
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
-            color: #0f172a; border-radius: 3rem; width: 210mm; min-height: 297mm; padding: 60px; 
-            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7); position: relative; overflow: hidden; 
-            border: 8px solid transparent; transition: all 0.4s ease; 
+            background: #ffffff; color: #0f172a; width: 210mm; min-height: 297mm; padding: 80px; 
+            box-shadow: 0 60px 120px -20px rgba(0, 0, 0, 0.8); position: relative; transition: all 0.5s ease;
+            border-left: 20px solid #64748b; 
         }
 
-        .hidden-canvas { opacity: 0; transform: scale(0.9) translateY(50px); pointer-events: none; position: absolute; }
+        .hidden-canvas { opacity: 0; transform: scale(0.98) translateY(20px); pointer-events: none; position: absolute; }
 
         /* THEME BORDERS & STATUS COLORS */
-        .theme-PENDING { border-color: #3b82f6; } 
-        .theme-OVERDUE { border-color: #ef4444; } 
-        .theme-PAID { border-color: #10b981; }    
-        .theme-DRAFT { border-color: #64748b; }   
+        .theme-PENDING { border-left-color: #2563eb; } 
+        .theme-OVERDUE { border-left-color: #ef4444; } 
+        .theme-PAID { border-left-color: #10b981; }    
+        .theme-DRAFT { border-left-color: #64748b; }   
         
         .status-DRAFT { background: #64748b; } 
         .status-PAID { background: #10b981; } 
         .status-PENDING { background: #3b82f6; } 
         .status-OVERDUE { background: #ef4444; }
+
+        /* TYPOGRAPHY */
+        .exclusive-title { font-size: 80px; font-weight: 900; line-height: 0.8; letter-spacing: -0.05em; color: #0f172a; font-style: italic; }
+        .data-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: #94a3b8; margin-bottom: 4px; }
+
+        table thead th { text-align: left; padding: 20px 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; border-bottom: 3px solid #0f172a; }
+        table tbody td { padding: 25px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 600; }
 
         .custom-scroll::-webkit-scrollbar { width: 4px; } 
         .custom-scroll::-webkit-scrollbar-thumb { background: #312e81; border-radius: 10px; }
@@ -43,7 +49,7 @@
         @media print { 
             .no-print { display: none !important; } 
             .main-canvas { background: white; padding: 0; } 
-            .glass-paper { border: none; box-shadow: none; width: 100%; margin: 0; border-radius: 0; }
+            .glass-paper { border-left-width: 40px !important; box-shadow: none; width: 100%; margin: 0; }
         }
     </style>
 </head>
@@ -58,7 +64,7 @@
     <aside class="sidebar custom-scroll no-print">
         <div class="flex items-center gap-3 mb-8">
             <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg">DB</div>
-            <h1 class="text-xl font-black italic text-white uppercase tracking-tighter">Chrono v7.2</h1>
+            <h1 class="text-xl font-black italic text-white uppercase tracking-tighter">Chrono v7.3</h1>
         </div>
 
         <div class="bg-slate-900/80 p-5 rounded-3xl border border-white/5 mb-6">
@@ -106,61 +112,75 @@
 
     <main class="main-canvas">
         <div id="document-content" class="glass-paper hidden-canvas theme-DRAFT">
-            <div id="doc-accent-bar" class="absolute top-0 left-0 w-full h-3 status-DRAFT"></div>
-
-            <header class="flex justify-between items-start mb-16">
-                <div class="space-y-6">
-                    <img id="logo-img" src="https://via.placeholder.com/180x60?text=BRAND+LOGO" class="h-12 object-contain">
-                    <div>
-                        <h2 id="dynamic-title" class="text-6xl font-black tracking-tighter text-slate-900 uppercase italic">QUOTATION</h2>
-                        <div class="flex items-center gap-3 mt-4">
-                            <span id="doc-status-badge" class="px-6 py-1.5 rounded-full text-[10px] text-white status-DRAFT font-black tracking-widest">DRAFT</span>
-                            <span id="rc-tag" class="hidden font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 text-[10px]"></span>
+            
+            <header class="flex justify-between items-start mb-24">
+                <div class="w-2/3">
+                    <img id="logo-img" src="https://via.placeholder.com/200x60?text=BRAND+IDENTITY" class="h-14 mb-12 grayscale brightness-0">
+                    <div class="relative">
+                        <h2 id="dynamic-title" class="exclusive-title mb-6">QUOTATION</h2>
+                        <div class="flex items-center gap-4">
+                            <span id="doc-status-badge" class="px-5 py-1 text-[10px] text-white status-DRAFT font-black tracking-widest uppercase italic">DRAFT</span>
+                            <span id="rc-tag" class="hidden font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded border border-emerald-100 text-[10px]"></span>
                         </div>
                     </div>
                 </div>
-                <div class="text-right space-y-2">
-                    <h3 id="set-comp-name" class="font-black text-2xl text-slate-900 uppercase italic tracking-tighter">YOUR COMPANY</h3>
-                    <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed">
-                        <p id="set-comp-addr">MALAYSIA</p>
-                        <p id="set-comp-reg" class="text-indigo-600 mt-1">REG NO: 000000</p>
+                <div class="w-1/3 text-right">
+                    <p class="data-label">Provider</p>
+                    <h3 id="set-comp-name" class="font-black text-xl text-slate-900 uppercase italic tracking-tighter">YOUR BUSINESS</h3>
+                    <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed mt-4">
+                        <p id="set-comp-addr">MALAYSIA HQ</p>
+                        <p id="set-comp-reg" class="text-indigo-600 font-black mt-2">REG_000000-X</p>
                     </div>
                 </div>
             </header>
 
-            <div class="grid grid-cols-2 gap-12 mb-16 bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100">
-                <div>
-                    <h4 class="text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest">Billed To:</h4>
-                    <p id="c-name" contenteditable="true" class="text-3xl font-black text-slate-900 italic">Recipient Name</p>
-                    <p id="c-addr" contenteditable="true" class="text-xs text-slate-400 mt-3 uppercase leading-relaxed font-medium">Installation Address...</p>
+            <div class="flex border-t border-slate-100 pt-12 mb-20">
+                <div class="w-1/2">
+                    <p class="data-label">Recipient</p>
+                    <p id="c-name" contenteditable="true" class="text-4xl font-black text-slate-900 italic leading-none">Client Name</p>
+                    <p id="c-addr" contenteditable="true" class="text-[11px] text-slate-400 mt-6 uppercase leading-relaxed font-bold max-w-xs">Site Deployment Address Required...</p>
                 </div>
-                <div class="text-right space-y-1">
-                    <p class="text-slate-400 text-[11px] uppercase tracking-widest">Document Ref</p>
-                    <p id="doc-id" contenteditable="true" class="text-slate-900 font-black text-lg uppercase">QT-2026-001</p>
-                    <p class="text-slate-400 text-[11px] uppercase tracking-widest mt-4">Date</p>
-                    <p id="issue-date" contenteditable="true" class="text-slate-900 font-black">30/01/2026</p>
+                <div class="w-1/2 flex justify-end gap-16 text-right">
+                    <div>
+                        <p class="data-label">Reference</p>
+                        <p id="doc-id" contenteditable="true" class="text-slate-900 font-black text-lg uppercase tracking-tighter">QT-2601</p>
+                    </div>
+                    <div>
+                        <p class="data-label">Issued</p>
+                        <p id="issue-date" contenteditable="true" class="text-slate-900 font-black text-lg uppercase tracking-tighter">30/01/26</p>
+                    </div>
                 </div>
             </div>
 
-            <table class="w-full mb-16">
+            <table class="w-full mb-24">
                 <thead>
-                    <tr class="text-[10px] font-black text-slate-400 uppercase border-b-2 border-slate-100">
-                        <th class="py-5 text-left">Description</th><th class="py-5 text-center w-24">Qty</th><th class="py-5 text-right w-32">Unit RM</th><th class="py-5 text-right w-32">Total</th><th class="no-print w-10"></th>
+                    <tr>
+                        <th class="w-3/5">Item Description</th>
+                        <th class="text-center w-16">Qty</th>
+                        <th class="text-right w-32">Rate RM</th>
+                        <th class="text-right w-32">Total</th>
+                        <th class="no-print w-10"></th>
                     </tr>
                 </thead>
-                <tbody id="item-list" class="text-slate-900"></tbody>
+                <tbody id="item-list" class="text-slate-900 font-bold uppercase"></tbody>
             </table>
 
-            <div class="mt-auto grid grid-cols-2 gap-10 items-end">
-                <div class="space-y-6">
-                    <div id="terms-container" class="text-[9px] text-slate-400 italic uppercase leading-relaxed bg-slate-50 p-6 rounded-3xl border border-slate-100">TERMS: 50% DEP REQ.</div>
-                    <img id="stamp-img" class="w-32 h-32 object-contain opacity-30 transform -rotate-12">
+            <div class="mt-auto flex justify-between items-end border-t border-slate-100 pt-12">
+                <div class="w-1/2">
+                    <div class="grid grid-cols-2 gap-4 mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <div class="col-span-2"><p class="data-label">Payment Instructions</p></div>
+                        <div><p class="text-[8px] text-slate-400 font-black uppercase">Bank Name</p><p class="text-[10px] font-black uppercase">Maybank Berhad</p></div>
+                        <div><p class="text-[8px] text-slate-400 font-black uppercase">Account No</p><p class="text-[10px] font-black">5123 XXXX XXXX</p></div>
+                    </div>
+                    <div id="terms-container" class="text-[9px] text-slate-400 font-black uppercase leading-loose p-6 border-r-4 border-slate-200 italic">TERMS: 50% DEP REQ.</div>
+                    <img id="stamp-img" class="w-32 h-32 object-contain opacity-20 mt-10 filter grayscale transform -rotate-6">
                 </div>
                 <div class="text-right">
-                    <div class="bg-slate-900 text-white p-10 rounded-[3.5rem] shadow-2xl border-b-8 border-slate-700">
-                        <p class="text-[10px] font-black opacity-50 uppercase tracking-widest mb-2">Total Amount (RM)</p>
-                        <p id="grand-total" class="text-5xl font-black italic tracking-tighter">RM 0.00</p>
+                    <p class="data-label mb-4">Total Investment (RM)</p>
+                    <div class="bg-slate-900 text-white p-12 inline-block shadow-2xl">
+                        <p id="grand-total" class="text-6xl font-black italic tracking-tighter">0.00</p>
                     </div>
+                    <p class="text-[8px] font-black text-slate-400 mt-4 uppercase tracking-widest italic">Includes 6% Service Tax Processing Fee</p>
                 </div>
             </div>
         </div>
@@ -196,7 +216,7 @@
 
     <div id="scraper-portal" class="hidden fixed inset-0 bg-slate-950 z-[700] flex flex-col p-4">
         <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-black italic text-white uppercase">Maps Portal</h3><button onclick="toggleScraperPortal()" class="bg-rose-600 text-white px-6 py-2 rounded-xl font-black uppercase text-xs">Exit</button></div>
-        <iframe id="maps-frame" src="http://googleusercontent.com/maps.google.com" class="flex-1 rounded-[2rem] border-4 border-slate-800 shadow-2xl"></iframe>
+        <iframe id="maps-frame" src="https://www.google.com/maps" class="flex-1 rounded-[2rem] border-4 border-slate-800 shadow-2xl"></iframe>
     </div>
 
     <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 z-[900] flex items-center justify-center p-6 text-slate-900">
@@ -252,7 +272,6 @@
             document.getElementById('toggle-doc-btn').innerText = canvas.classList.contains('hidden-canvas') ? "Show Canvas" : "Hide Canvas";
         }
 
-        // MODAL TOGGLES
         function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
         function toggleLeadInjector() { document.getElementById('lead-injector-modal').classList.toggle('hidden'); }
         function toggleScraperPortal() { document.getElementById('scraper-portal').classList.toggle('hidden'); }
@@ -260,7 +279,6 @@
         function toggleBlast() { document.getElementById('blast-modal').classList.toggle('hidden'); if(!document.getElementById('blast-modal').classList.contains('hidden')) renderBlast(); }
         function updateDelayLabel(v) { document.getElementById('delay-val').innerText = v + 's'; }
 
-        // IDENTITY
         function saveIdentity() {
             const data = { n: document.getElementById('in-comp-name').value, a: document.getElementById('in-comp-addr').value, r: document.getElementById('in-comp-reg').value };
             localStorage.setItem('chrono_identity', JSON.stringify(data));
@@ -272,7 +290,6 @@
             document.getElementById('in-comp-name').value = data.n; document.getElementById('in-comp-addr').value = data.a; document.getElementById('in-comp-reg').value = data.r;
         }
 
-        // DATA SYNC
         function syncData() {
             const rInv = localStorage.getItem('v72_inv') || "CCTV Camera | High Definition | 2500 | 1600";
             const rCli = localStorage.getItem('v72_cli') || "Ahmad | Gemas | 60123456789";
@@ -291,7 +308,6 @@
             syncData(); toggleDb();
         }
 
-        // LEADS
         function processLeadInjection() {
             const input = document.getElementById('injector-input').value;
             const tag = document.getElementById('injector-tag').value.toUpperCase();
@@ -301,14 +317,14 @@
             saveDb(); toggleLeadInjector();
         }
 
-        // CALCULATION
         function addRow() {
             const row = document.createElement('tr'); row.className = "border-b border-slate-50";
             let opt = inventory.map((v, i) => `<option value="${i}">${v.n}</option>`).join('');
-            row.innerHTML = `<td class="py-6"><select onchange="fillRow(this)" class="no-print bg-slate-100 text-[8px] font-black p-1 rounded-lg mb-2 outline-none"><option value="">Quick Select...</option>${opt}</select><div contenteditable="true" class="font-black text-sm uppercase italic">ITEM</div><div contenteditable="true" class="text-xs text-slate-400">SPECS...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black italic pr-4">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-300">×</button></td>`;
+            row.innerHTML = `<td><select onchange="fillRow(this)" class="no-print bg-slate-100 text-[8px] font-black p-1 rounded-lg mb-2 outline-none"><option value="">Quick Select...</option>${opt}</select><div contenteditable="true" class="uppercase">ITEM</div><div contenteditable="true" class="text-[10px] text-slate-400 font-medium">DETAILS...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black italic">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-300">×</button></td>`;
             document.getElementById('item-list').appendChild(row);
         }
         function fillRow(el) { const i = inventory[el.value]; const r = el.closest('tr'); r.cells[0].querySelectorAll('div')[0].innerText = i.n; r.cells[0].querySelectorAll('div')[1].innerText = i.d; r.cells[2].innerText = i.s; calc(); }
+        
         function calc() {
             let totalSell = 0; let totalCost = 0;
             document.querySelectorAll("#item-list tr").forEach(r => {
@@ -326,7 +342,6 @@
             document.getElementById('grand-total').innerText = `RM ${(totalSell * 1.06).toFixed(2)}`;
         }
 
-        // WHATSAPP
         function renderBlast() {
             const t = document.getElementById('grand-total').innerText;
             document.getElementById('blast-list').innerHTML = clients.map(c => `<div class="p-4 bg-slate-50 rounded-2xl flex justify-between items-center border border-slate-100 mb-2"><div><div class="text-[10px] font-black uppercase text-slate-700">${c.n}</div><div class="text-[8px] font-bold text-slate-400">${c.ph}</div></div><button class="send-btn bg-slate-200 text-slate-400 text-[9px] font-black px-4 py-2 rounded-xl" data-ph="${c.ph}" data-name="${c.n}" data-total="${t}">QUEUED</button></div>`).join('');
@@ -342,8 +357,7 @@
                 btn.innerText = `SEND IN ${time}s`; time--;
                 if(time < 0) {
                     clearInterval(timer);
-                    const hash = "[ID:" + Math.random().toString(36).substring(7).toUpperCase() + "]";
-                    const msg = document.getElementById('blast-msg').value.replace('[Name]', btn.dataset.name).replace('[Total]', btn.dataset.total).replace('[ID]', hash);
+                    const msg = document.getElementById('blast-msg').value.replace('[Name]', btn.dataset.name).replace('[Total]', btn.dataset.total);
                     window.open(`https://wa.me/${btn.dataset.ph.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
                     btn.innerText = "SENT ✅"; btn.className = "bg-green-500 text-white text-[9px] font-black px-4 py-2 rounded-xl";
                     queueIdx++; setTimeout(runQueue, 1500);
@@ -358,11 +372,9 @@
         function updateStatus(v) { 
             const badge = document.getElementById('doc-status-badge');
             const canvas = document.getElementById('document-content');
-            const accent = document.getElementById('doc-accent-bar');
             badge.innerText = v; 
-            badge.className = `px-6 py-1.5 rounded-full text-[10px] text-white status-${v} font-black tracking-widest`;
+            badge.className = `px-5 py-1 text-[10px] text-white status-${v} font-black tracking-widest uppercase italic`;
             canvas.className = `glass-paper theme-${v} ${canvas.classList.contains('hidden-canvas') ? 'hidden-canvas' : ''}`;
-            accent.className = `absolute top-0 left-0 w-full h-3 status-${v}`;
             document.getElementById('dynamic-title').innerText = v === 'PAID' ? 'OFFICIAL RECEIPT' : (v === 'OVERDUE' ? 'TAX INVOICE' : 'QUOTATION');
             if(v === 'PAID') { document.getElementById('rc-tag').classList.remove('hidden'); document.getElementById('rc-tag').innerText = "RC-" + Date.now().toString().slice(-4); }
             else { document.getElementById('rc-tag').classList.add('hidden'); }
