@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono-Doc v6.3 | Supreme Master</title>
+    <title>Chrono-Doc v6.4 | Secure Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -18,10 +18,23 @@
 </head>
 <body class="flex h-screen">
 
+    <div id="security-lock" class="fixed inset-0 bg-slate-950 z-[100] flex flex-col items-center justify-center p-6 transition-all duration-700">
+        <div class="w-16 h-16 bg-indigo-600 rounded-2xl mb-6 flex items-center justify-center shadow-2xl shadow-indigo-500/40">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </div>
+        <h2 class="text-white font-black text-xl mb-2 uppercase tracking-tighter">System Locked</h2>
+        <p class="text-slate-500 text-[10px] font-bold uppercase mb-8 tracking-[0.3em]">Authorized Personnel Only</p>
+        <div class="flex flex-col gap-4 w-full max-w-[280px]">
+            <input type="password" id="sys-pass" placeholder="ACCESS CODE" class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center text-white font-black tracking-[0.5em] outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+            <button onclick="unlockApp()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-indigo-500">Unlock System</button>
+            <p id="lock-error" class="text-rose-500 text-[9px] font-black text-center hidden uppercase">Invalid Credentials</p>
+        </div>
+    </div>
+
     <aside class="no-print sidebar p-6 flex flex-col gap-5 custom-scroll">
         <div class="flex items-center gap-3 mb-2">
             <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/20">DB</div>
-            <h1 class="text-xl font-black tracking-tighter text-white uppercase italic">Chrono v6.3</h1>
+            <h1 class="text-xl font-black tracking-tighter text-white uppercase italic">Chrono v6.4</h1>
         </div>
 
         <div class="space-y-3">
@@ -86,7 +99,7 @@
 
             <div class="grid grid-cols-2 gap-10 border-y border-slate-50 py-10 mb-10 text-slate-900">
                 <div>
-                    <h4 class="text-[10px] font-black text-indigo-500 uppercase mb-2 tracking-widest">To Recipient</h4>
+                    <h4 class="text-[10px] font-black text-indigo-500 uppercase mb-2 tracking-widest text-xs">To Recipient</h4>
                     <p id="c-name" contenteditable="true" class="text-2xl font-black">Client Name</p>
                     <p id="c-addr" contenteditable="true" class="text-xs text-slate-400 font-medium leading-relaxed mt-2">Street, City, State</p>
                 </div>
@@ -124,9 +137,9 @@
     </main>
 
     <div id="blast-modal" class="hidden fixed inset-0 bg-slate-900/98 backdrop-blur-2xl z-50 flex items-center justify-center p-6">
-        <div class="bg-white rounded-[3rem] p-10 w-full max-w-4xl shadow-2xl text-slate-900">
+        <div class="bg-white rounded-[3rem] p-10 w-full max-w-4xl shadow-2xl text-slate-900 text-xs">
             <div class="flex justify-between items-start mb-8 border-b pb-6">
-                <div><h3 class="text-3xl font-black tracking-tighter">STEALTH AUTO-PILOT</h3><p class="text-[10px] text-emerald-500 font-black uppercase">v6.3 Active Engine</p></div>
+                <div><h3 class="text-3xl font-black tracking-tighter">STEALTH AUTO-PILOT</h3><p class="text-[10px] text-emerald-500 font-black uppercase">v6.4 Secure Active</p></div>
                 <button onclick="toggleBlast()" class="text-slate-300 hover:text-rose-500 text-3xl font-black">×</button>
             </div>
             <div class="grid grid-cols-12 gap-8">
@@ -147,13 +160,13 @@
                 </div>
                 <div class="col-span-7">
                     <textarea id="blast-msg" class="w-full h-24 bg-slate-50 rounded-2xl p-4 text-xs font-bold border-none mb-4" placeholder="Message Template...">Hi [Name], your document for RM [Total] is ready.</textarea>
-                    <div id="blast-list" class="h-64 overflow-y-auto space-y-2 custom-scroll pr-2"></div>
+                    <div id="blast-list" class="h-64 overflow-y-auto space-y-2 custom-scroll pr-2 text-xs"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-50 flex items-center justify-center p-6 text-slate-900">
+    <div id="db-modal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-50 flex items-center justify-center p-6 text-slate-900 text-xs">
         <div class="bg-white rounded-[3rem] p-10 w-full max-w-5xl">
             <h3 class="text-2xl font-black mb-6 uppercase">Database Intelligence</h3>
             <div class="grid grid-cols-3 gap-6">
@@ -171,6 +184,20 @@
     <script>
         let inventory = []; let clients = []; let queueIdx = 0; let isAuto = false; let blastImageBlob = null;
 
+        // SECURITY LOGIC
+        function unlockApp() {
+            const input = document.getElementById('sys-pass').value;
+            const MASTER_PASS = "303677"; // CHANGE PASSWORD HERE
+            if (input === MASTER_PASS) {
+                document.getElementById('security-lock').style.opacity = '0';
+                setTimeout(() => document.getElementById('security-lock').classList.add('hidden'), 700);
+                sessionStorage.setItem('chrono_auth', 'true');
+            } else {
+                document.getElementById('lock-error').classList.remove('hidden');
+            }
+        }
+        window.addEventListener('load', () => { if (sessionStorage.getItem('chrono_auth') === 'true') document.getElementById('security-lock').classList.add('hidden'); });
+
         function toggleDb() { document.getElementById('db-modal').classList.toggle('hidden'); }
         function toggleBlast() { document.getElementById('blast-modal').classList.toggle('hidden'); if(!document.getElementById('blast-modal').classList.contains('hidden')) renderBlast(); }
         function updateDelayLabel(v) { document.getElementById('delay-val').innerText = v + 's'; }
@@ -181,14 +208,11 @@
             const title = document.getElementById('dynamic-title');
             const rLabel = document.getElementById('receipt-no');
             const dateSpan = document.getElementById('issue-date');
-            
             badge.innerText = v;
             badge.className = `px-4 py-1 rounded-full text-[10px] font-black text-white status-${v}`;
             box.className = `bg-slate-900 text-white p-8 rounded-[3rem] min-w-[320px] shadow-2xl status-${v}`;
-
             const today = new Date();
             const formattedDate = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-
             if (v === 'PAID') {
                 title.innerText = "OFFICIAL RECEIPT"; title.className = "text-5xl font-black tracking-tighter text-emerald-600 uppercase";
                 rLabel.classList.remove('hidden'); rLabel.innerText = "Receipt: RC-" + Math.floor(1000 + Math.random() * 9000);
@@ -219,7 +243,7 @@
         function addRow() {
             const row = document.createElement('tr'); row.className = "border-b border-slate-50";
             let opt = inventory.map((v, i) => `<option value="${i}">${v.n}</option>`).join('');
-            row.innerHTML = `<td class="py-5"><select onchange="fillRow(this)" class="no-print bg-slate-50 text-[9px] font-black p-1 rounded-lg mb-2 border-none text-indigo-600 outline-none"><option value="">Select Item...</option>${opt}</select><div contenteditable="true" class="font-black text-sm">Item</div><div contenteditable="true" class="text-xs text-slate-400 italic">Specifications...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-200 hover:text-rose-500 transition px-2">×</button></td>`;
+            row.innerHTML = `<td class="py-5"><select onchange="fillRow(this)" class="no-print bg-slate-50 text-[9px] font-black p-1 rounded-lg mb-2 border-none text-indigo-600 outline-none"><option value="">Select Item...</option>${opt}</select><div contenteditable="true" class="font-black text-sm">Item</div><div contenteditable="true" class="text-xs text-slate-400 italic">Specs...</div></td><td class="text-center font-black" contenteditable="true" oninput="calc()">1</td><td class="text-right font-bold text-slate-400" contenteditable="true" oninput="calc()">0.00</td><td class="text-right font-black">0.00</td><td class="no-print text-right"><button onclick="this.parentElement.parentElement.remove(); calc();" class="text-slate-200 hover:text-rose-500 transition px-2">×</button></td>`;
             document.getElementById('item-list').appendChild(row);
         }
 
@@ -261,7 +285,7 @@
                     const hash = "[ID: " + Math.random().toString(36).substring(7).toUpperCase() + "]";
                     const msg = document.getElementById('blast-msg').value.replace('[Name]', btn.dataset.name).replace('[Total]', btn.dataset.total) + "\n\n" + hash;
                     window.open(`https://wa.me/${btn.dataset.ph.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
-                    btn.innerText = "SUCCESS ✅"; btn.className = "bg-green-500 text-white text-[9px] font-black px-4 py-2 rounded-xl";
+                    btn.innerText = "OPENED ✅"; btn.className = "bg-green-500 text-white text-[9px] font-black px-4 py-2 rounded-xl";
                     queueIdx++; setTimeout(runQueue, 1500);
                 }
             }, 1000);
