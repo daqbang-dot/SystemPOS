@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing Master Tool | V7.3.3</title>
+    <title>Marketing Master Tool | V7.3.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -21,7 +21,8 @@
         .status-DRAFT { background: #64748b; } .status-PAID { background: #10b981; } .status-PENDING { background: #3b82f6; } .status-OVERDUE { background: #ef4444; }
 
         /* STAMP AREA */
-        .stamp-box { width: 140px; height: 140px; border: 2px dashed #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; color: #cbd5e1; font-size: 9px; font-weight: 900; text-transform: uppercase; padding: 15px; line-height: 1.2; }
+        .stamp-box { width: 140px; height: 140px; border: 2px dashed #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; color: #cbd5e1; font-size: 9px; font-weight: 900; text-transform: uppercase; padding: 15px; line-height: 1.2; cursor: pointer; position: relative; overflow: hidden; }
+        .stamp-box img { position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 10; background: white; }
         
         .exclusive-title { font-size: 70px; font-weight: 900; line-height: 0.8; letter-spacing: -0.05em; color: #0f172a; font-style: italic; text-transform: uppercase; }
         .data-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: #94a3b8; margin-bottom: 4px; }
@@ -43,7 +44,7 @@
             <span class="text-3xl">🚀</span>
             <div>
                 <h1 class="text-lg font-black italic text-white uppercase tracking-tighter leading-none">Marketing Master</h1>
-                <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">Chrono System v7.3.3</p>
+                <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">Chrono System v7.3.5</p>
             </div>
         </div>
 
@@ -108,7 +109,7 @@
                 <div class="w-1/2 text-right">
                     <p class="data-label">Reference</p>
                     <p id="doc-id" contenteditable="true" class="text-slate-900 font-black text-lg">REF: #2026-ROCKET</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-2">JANUARY 30, 2026</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-2">JANUARY 31, 2026</p>
                 </div>
             </div>
 
@@ -129,12 +130,16 @@
                 <div class="w-1/2">
                     <div class="bg-slate-50 p-6 rounded-2xl border mb-6">
                         <p class="data-label">Payments</p>
-                        <p class="text-[10px] font-black">MAYBANK: 5123 XXXX XXXX</p>
-                        <div id="terms-container" class="text-[9px] text-slate-400 font-black mt-4 italic">TERMS APPLY.</div>
+                        <p id="bank-details" contenteditable="true" class="text-[10px] font-black">MAYBANK: 5123 XXXX XXXX</p>
+                        <div id="terms-container" contenteditable="true" class="text-[9px] text-slate-400 font-black mt-4 italic">TERMS APPLY.</div>
                     </div>
                 </div>
                 <div class="text-right flex flex-col items-end gap-8">
-                    <div class="stamp-box">PLACE COMPANY STAMP HERE</div>
+                    <div class="stamp-box" onclick="document.getElementById('stamp-upload').click()">
+                        <span id="stamp-text">PLACE COMPANY STAMP HERE</span>
+                        <img id="stamp-img" src="" class="hidden">
+                    </div>
+                    <input type="file" id="stamp-upload" class="hidden" accept="image/*" onchange="loadStamp(event)">
                     
                     <div class="bg-slate-900 text-white p-10 min-w-[280px] shadow-2xl">
                         <p class="data-label text-indigo-400">Total Investment (RM)</p>
@@ -193,7 +198,12 @@
         let inventory = []; let clients = []; let isAuto = false; let queueIdx = 0;
 
         function unlockApp() { if (document.getElementById('sys-pass').value === "1234") { document.getElementById('security-lock').classList.add('hidden'); sessionStorage.setItem('chrono_auth', 'true'); } }
-        window.onload = () => { if (sessionStorage.getItem('chrono_auth') === 'true') document.getElementById('security-lock').classList.add('hidden'); syncData(); };
+        
+        window.onload = () => { 
+            if (sessionStorage.getItem('chrono_auth') === 'true') document.getElementById('security-lock').classList.add('hidden'); 
+            syncData();
+            loadPersistentStamp();
+        };
         
         function toggleCanvas() { 
             const c = document.getElementById('document-content'); 
@@ -204,6 +214,29 @@
         function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
         function toggleDb() { document.getElementById('db-modal').classList.toggle('hidden'); }
         function toggleBlast() { document.getElementById('blast-modal').classList.toggle('hidden'); if(!document.getElementById('blast-modal').classList.contains('hidden')) renderBlast(); }
+
+        // PERSISTENT STAMP LOGIC
+        function loadStamp(e) {
+            const r = new FileReader();
+            r.onload = () => {
+                const imgData = r.result;
+                localStorage.setItem('chrono_stamp', imgData);
+                applyStampImage(imgData);
+            };
+            r.readAsDataURL(e.target.files[0]);
+        }
+
+        function loadPersistentStamp() {
+            const savedStamp = localStorage.getItem('chrono_stamp');
+            if(savedStamp) applyStampImage(savedStamp);
+        }
+
+        function applyStampImage(data) {
+            const img = document.getElementById('stamp-img');
+            img.src = data;
+            img.classList.remove('hidden');
+            document.getElementById('stamp-text').classList.add('hidden');
+        }
 
         function syncData() {
             const rInv = localStorage.getItem('v72_inv') || ""; const rCli = localStorage.getItem('v72_cli') || ""; const rTrm = localStorage.getItem('v72_trm') || "";
